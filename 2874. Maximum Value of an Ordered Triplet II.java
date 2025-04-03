@@ -12,6 +12,6 @@ public class Solution {
         for (int j = 1; j < n - 1; j++) {
             res = Math.max(res, (long) (leftMax[j] - nums[j]) * rightMax[j]);
         }
-        return res;
+        return res; 
     }
 }
