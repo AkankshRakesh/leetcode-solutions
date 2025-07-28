@@ -1,31 +1,23 @@
-class Solution
-{
-public:
-    void backtrack(const vector<int> &nums, int index, int currentOR, int maxOR, int &count)
-    {
-        if (currentOR == maxOR)
-        {
-            count++;
+class Solution {
+    int ans = 0;
+
+    void backtrack(vector<int>& nums, int ind, int n, int currOr, int targetOr) {
+        if (ind >= n) {
+            if (currOr == targetOr) ans++;
+            return;
         }
 
-        for (int i = index; i < nums.size(); ++i)
-        {
-            backtrack(nums, i + 1, currentOR | nums[i], maxOR, count);
-        }
+        backtrack(nums, ind + 1, n, currOr | nums[ind], targetOr);
+        backtrack(nums, ind + 1, n, currOr, targetOr);
     }
 
-    int countMaxOrSubsets(vector<int> &nums)
-    {
-        int maxOR = 0;
-
+public:
+    int countMaxOrSubsets(vector<int>& nums) {
+        int maxOr = nums[0];
         for (int num : nums)
-        {
-            maxOR |= num;
-        }
+            maxOr |= num;
 
-        int count = 0;
-        backtrack(nums, 0, 0, maxOR, count);
-
-        return count;
+        backtrack(nums, 0, nums.size(), 0, maxOr);
+        return ans;
     }
 };
