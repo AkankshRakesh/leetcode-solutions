@@ -1,23 +1,33 @@
 class Solution {
-
     public List<Integer> partitionLabels(String s) {
-        int[] lastOccurrence = new int[26];
-        for (int i = 0; i < s.length(); ++i) {
-            lastOccurrence[s.charAt(i) - 'a'] = i;
+        int n = s.length();
+        int[] lastSeen = new int[26];
+        for(int i = 1; i < n; i++){
+            char ch = s.charAt(i);
+            lastSeen[ch - 'a'] = i;
         }
 
-        int partitionEnd = 0, partitionStart = 0;
-        List<Integer> partitionSizes = new ArrayList<>();
-        for (int i = 0; i < s.length(); ++i) {
-            partitionEnd = Math.max(
-                partitionEnd,
-                lastOccurrence[s.charAt(i) - 'a']
-            );
-            if (i == partitionEnd) {
-                partitionSizes.add(i - partitionStart + 1);
-                partitionStart = i + 1;
+        HashSet<Character> hs = new HashSet<>();
+        ArrayList<Integer> arr = new ArrayList<>();
+
+        int lastInd = 0;
+        for(int i = 0; i < n; i++){
+            hs.add(s.charAt(i));
+            boolean res = true;
+            for(char ch : hs){
+                if(lastSeen[ch - 'a'] > i){
+                    res = false;
+                    break;
+                }
+            }
+
+            if(res){
+                arr.add(i - lastInd + 1);
+                lastInd = i + 1;
             }
         }
-        return partitionSizes;
+
+        // arr.add(n - lastInd);
+        return arr;
     }
 }
