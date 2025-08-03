@@ -1,19 +1,22 @@
 class Solution {
-    public void takeLeave(int ind, ArrayList<List<Integer>> arr, ArrayList<Integer> subArr, int n, int[] nums){
-        if(ind >= n){
-            arr.add(new ArrayList<>(subArr));
+public:
+    void backtrack(vector<vector<int>>& arr, vector<int>& temp, vector<int>& nums, int ind, int n) {
+        if (ind >= n) {
+            arr.push_back(temp);
             return;
         }
 
-        subArr.add(nums[ind]);
-        takeLeave(ind + 1, arr, subArr, n, nums);
-        subArr.remove(subArr.size() - 1);
-        takeLeave(ind + 1, arr, subArr, n, nums);
+        temp.push_back(nums[ind]);
+        backtrack(arr, temp, nums, ind + 1, n);
+
+        temp.pop_back();
+        backtrack(arr, temp, nums, ind + 1, n);
     }
-    public List<List<Integer>> subsets(int[] nums) {
-        ArrayList<List<Integer>> arr = new ArrayList<List<Integer>>();
-        ArrayList<Integer> temp = new ArrayList<>();
-        takeLeave(0, arr, temp, nums.length, nums);
+
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> arr;
+        vector<int> temp;
+        backtrack(arr, temp, nums, 0, nums.size());
         return arr;
     }
-}
+};
