@@ -1,46 +1,43 @@
 class Solution {
-    public void dfs(int[][] grid, int i, int j, int n, int m, int dist, int[][] leastTime){
+    public void dfs(int[][] grid, int[][] minTime,int currTime, int i, int j, int n, int m){
         if(i >= n || j >= m || i < 0 || j < 0) return;
         if(grid[i][j] == 0 || grid[i][j] == 2) return;
+        if(minTime[i][j] <= currTime) return;
+        minTime[i][j] = Math.min(minTime[i][j], currTime);
 
-        if (leastTime[i][j] <= dist) return;
-        leastTime[i][j] = dist;
-
-        
-        dfs(grid, i + 1, j, n, m, dist + 1, leastTime);
-        dfs(grid, i - 1, j, n, m, dist + 1, leastTime);
-        dfs(grid, i, j + 1, n, m, dist + 1, leastTime);
-        dfs(grid, i, j - 1, n, m, dist + 1, leastTime);
+        dfs(grid, minTime, currTime + 1, i + 1, j, n, m);
+        dfs(grid, minTime, currTime + 1, i - 1, j, n, m);
+        dfs(grid, minTime, currTime + 1, i, j + 1, n, m);
+        dfs(grid, minTime, currTime + 1, i, j - 1, n, m);
     }
     public int orangesRotting(int[][] grid) {
         int n = grid.length;
         int m = grid[0].length;
-        int[][] leastTime = new int[n][m];
         
-        for (int[] r : leastTime)
-            Arrays.fill(r, Integer.MAX_VALUE);
-
+        int[][] minTime = new int[n][m];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(grid[i][j] == 1) minTime[i][j] = Integer.MAX_VALUE;
+            }
+        }
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 if(grid[i][j] == 2){
-                    dfs(grid, i + 1, j, n, m, 1, leastTime);
-                    dfs(grid, i - 1, j, n, m, 1, leastTime);
-                    dfs(grid, i, j + 1, n, m, 1, leastTime);
-                    dfs(grid, i, j - 1, n, m, 1, leastTime);
+                    dfs(grid, minTime, 1, i + 1, j, n, m);
+                    dfs(grid, minTime, 1, i - 1, j, n, m);
+                    dfs(grid, minTime, 1, i, j + 1, n, m);
+                    dfs(grid, minTime, 1, i, j - 1, n, m);
                 }
             }
         }
 
-        int ans = 0;
+        int maxTime = 0;
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
-                if(grid[i][j] == 1){
-                    if(leastTime[i][j] == Integer.MAX_VALUE) return -1;
-                    ans = Math.max(ans, leastTime[i][j]);
-                }
+                if(grid[i][j] == 1) maxTime = Math.max(maxTime, minTime[i][j]);
             }
         }
-
-        return ans;
+        if(maxTime == Integer.MAX_VALUE) return -1;
+        return maxTime;
     }
 }
