@@ -1,23 +1,30 @@
 class Solution {
 public:
-    static inline array<int, 26> count(string& s, int l, int r){
-        array<int, 26> freq={0};
-        for(int i=l; i<=r; i++)
-            freq[s[i]-'a']++;
-        return freq;
+    bool match(int* arr1, int* arr2) {
+        for (int i = 0; i < 26; i++) {
+            if (arr1[i] != arr2[i]) return false;
+        }
+        return true;
     }
 
-    static bool checkInclusion(string& s1, string& s2) {
-        const int n1=s1.size(), n2=s2.size();
-        if (n2<n1) return 0;
-        auto freq1=count(s1, 0, n1-1);
-        auto freq2=count(s2, 0, n1-1);
-        if (freq1==freq2) return 1;
-        for(int l=1, r=n1; r<n2; r++, l++){
-            freq2[s2[l-1]-'a']--;
-            freq2[s2[r]-'a']++;
-            if (freq2== freq1) return 1;
+    bool checkInclusion(string s1, string s2) {
+        int n = s1.size(), m = s2.size();
+        if (n > m) return false;
+
+        int arr1[26] = {0}, arr2[26] = {0};
+
+        for (int i = 0; i < n; i++) arr1[s1[i] - 'a']++;
+        for (int i = 0; i < n; i++) arr2[s2[i] - 'a']++;
+
+        if (match(arr1, arr2)) return true;
+
+        int left = 0;
+        for (int i = n; i < m; i++) {
+            arr2[s2[left++] - 'a']--;
+            arr2[s2[i] - 'a']++;
+            if (match(arr1, arr2)) return true;
         }
-        return 0;
+
+        return false;
     }
 };
