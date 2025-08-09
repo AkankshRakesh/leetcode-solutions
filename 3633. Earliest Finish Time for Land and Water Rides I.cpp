@@ -5,7 +5,6 @@ public:
         int ind = 0;
         int leastTime = INT_MAX;
 
-        // Find least finish time in first set
         for (int i = 0; i < n; i++) {
             if (lst[i] + ld[i] < leastTime) {
                 ind = i;
@@ -16,7 +15,6 @@ public:
         int m = wst.size();
         int ans = INT_MAX;
 
-        // Find earliest finish in second set with possible buffer time
         for (int i = 0; i < m; i++) {
             int buffer = 0;
             if (leastTime < wst[i]) buffer = wst[i] - leastTime;
