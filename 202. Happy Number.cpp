@@ -1,15 +1,16 @@
 class Solution {
-    public boolean isHappy(int n) {
+public:
+    bool isHappy(int n) {
         if(n == 1) return true;
 
-        HashSet<Integer> hs = new HashSet<>();
-        while(!hs.contains(n)){
+        unordered_set<int> hs;
+        while(hs.find(n) == hs.end()) {
             if(n == 1) return true;
 
-            hs.add(n);
+            hs.insert(n);
             int next = 0;
-            while(n != 0){
-                next += ((n % 10) * (n % 10));
+            while(n != 0) {
+                next += (n % 10) * (n % 10);
                 n /= 10;
             }
 
@@ -18,4 +19,4 @@ class Solution {
 
         return false;
     }
-}
+};
