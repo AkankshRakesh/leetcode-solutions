@@ -1,16 +1,21 @@
 class Solution {
     public boolean isHappy(int n) {
-        while(true){
-            if(n == 1 || n == 7) return true;
-            else if(n < 10) return false;
+        if(n == 1) return true;
 
-            int temp = 0;
-            while(n > 0){
-                temp += (n % 10) * (n % 10);
+        HashSet<Integer> hs = new HashSet<>();
+        while(!hs.contains(n)){
+            if(n == 1) return true;
+
+            hs.add(n);
+            int next = 0;
+            while(n != 0){
+                next += ((n % 10) * (n % 10));
                 n /= 10;
             }
-            // System.out.println(temp);
-            n = temp;
+
+            n = next;
         }
+
+        return false;
     }
 }
