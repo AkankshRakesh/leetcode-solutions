@@ -1,24 +1,34 @@
 class Solution {
-    public void backtrack(int[] nums, int index, ArrayList<Integer> currArr, List<List<Integer>> arr, int n, HashSet<ArrayList<Integer>> hs){
-        if(index == n){
-            if(!hs.contains(currArr)){
-                arr.add(new ArrayList<>(currArr));
-                hs.add(new ArrayList<>(currArr));
-            }
+    public void backtrack(int[] nums, List<List<Integer>> res, int ind, ArrayList<Integer> currArr, HashSet<ArrayList<Integer>> hs){
+        if(ind >= nums.length){
+            if(hs.contains(currArr)) return;
+            hs.add(currArr);
+            res.add(new ArrayList<>(currArr));
             return;
         }
 
-        currArr.add(nums[index]);
-        backtrack(nums, index + 1, currArr, arr, n, hs);
+        currArr.add(nums[ind]);
+        backtrack(nums, res, ind + 1, currArr, hs);
+        
         currArr.remove(currArr.size() - 1);
-        backtrack(nums, index + 1, currArr, arr, n, hs);
+        backtrack(nums, res, ind + 1, currArr, hs);
 
     }
     public List<List<Integer>> subsetsWithDup(int[] nums) {
-        List<List<Integer>> arr = new ArrayList<List<Integer>>();
-        HashSet<ArrayList<Integer>> hs = new HashSet<ArrayList<Integer>>();
         Arrays.sort(nums);
-        backtrack(nums, 0, new ArrayList<Integer>(), arr, nums.length, hs);
-        return arr;
+
+        int n = nums.length;
+        List<List<Integer>> res = new ArrayList<>();
+        HashSet<ArrayList<Integer>> hs = new HashSet<>();
+        res.add(new ArrayList<>());
+        for(int i = 0; i < n; i++){
+            if(i == 0 || (i > 0 && nums[i - 1] != nums[i])){
+                ArrayList<Integer> temp = new ArrayList<>();
+                temp.add(nums[i]);
+                backtrack(nums, res, i + 1, temp, hs);
+            }
+        }
+
+        return res;
     }
 }
