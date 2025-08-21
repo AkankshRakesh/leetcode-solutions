@@ -33,4 +33,4 @@ class Solution {
 
         return headAns.next;
     }
-}
+} 
