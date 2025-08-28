@@ -4,10 +4,22 @@ class Solution {
         List<List<String>> ans = new ArrayList<>();
 
         for(String str: strs){
-            char tempArr[] = str.toCharArray();
-            Arrays.sort(tempArr);
-            String sortedStr = new String(tempArr);
-            
+            Integer[] arr = new Integer[26];
+            for(char ch : str.toCharArray()){
+                if(arr[ch - 'a'] == null) arr[ch - 'a'] = 0;
+                arr[ch - 'a']++;
+                System.out.println(ch);
+                System.out.println(arr[ch - 'a']);
+
+            }
+            StringBuilder sortedSb = new StringBuilder();
+            for(int i = 0; i < 26; i++){
+                if(arr[i] != null){
+                    sortedSb.append(i + 'a');
+                    sortedSb.append(arr[i] + '0');
+                }
+            }
+            String sortedStr = sortedSb.toString();
             if(!hm.containsKey(sortedStr)){
                 hm.put(sortedStr, ans.size());
                 ArrayList<String> temp = new ArrayList<>();
