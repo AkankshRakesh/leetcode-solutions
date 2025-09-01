@@ -30,4 +30,4 @@ public:
 
         return totalPassRatio / classes.size();
     }
-};
+}; 
