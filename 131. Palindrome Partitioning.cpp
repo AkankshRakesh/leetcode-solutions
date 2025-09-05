@@ -18,7 +18,7 @@ public:
 
         for (int i = index + 1; i <= n; i++) {
             string substr = s.substr(index, i - index);
-            if (isPalin(substr)) {
+            if (isPalin(substr)) { 
                 currArr.push_back(substr);
                 backtracking(s, arr, currArr, i, n);
                 currArr.pop_back(); // backtrack
