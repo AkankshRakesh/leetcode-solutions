@@ -1,33 +1,36 @@
 class Solution {
-    public boolean isPalin(String s){
-        int n = s.length();
-        int left = 0, right = n - 1;
-        while(left < right){
-            if(s.charAt(left) != s.charAt(right)) return false;
-            left++;
-            right--;
+    public boolean palindrome(String s){
+        int len = s.length();
+        for(int i = 0; i <= len / 2; i++){
+            if(s.charAt(i) != s.charAt(len - 1 - i)) return false;
         }
+
         return true;
     }
-    public void backtracking(String s, List<List<String>> arr, ArrayList<String> currArr, int index, int n){
-        if (index == n) {
-            arr.add(new ArrayList<>(currArr));
+    public void backtrack(String s, int index, List<List<String>> ans, HashSet<String> acceptedHs, ArrayList<String> currArr,StringBuilder curr){
+        int len = s.length();
+        if(index >= len){
+            if(curr.length() == 0) ans.add(new ArrayList<>(currArr));
             return;
         }
 
-        for (int i = index + 1; i <= n; i++) {
-            String substr = s.substring(index, i);
-            if (isPalin(substr)) {
-                currArr.add(substr);
-                backtracking(s, arr, currArr, i, n);
-                currArr.remove(currArr.size() - 1); // backtrack
-            }
+        curr.append(s.charAt(index));
+        boolean isPalin = false;
+        if(acceptedHs.contains(curr.toString()) || palindrome(curr.toString())){
+            isPalin = true;
+            currArr.add(curr.toString());
+            acceptedHs.add(curr.toString());
+            backtrack(s, index + 1, ans, acceptedHs, currArr, new StringBuilder(""));
         }
+        // curr.deleteCharAt(curr.length() - 1);
+        if(isPalin) currArr.remove(currArr.size() - 1);
+        backtrack(s, index + 1, ans, acceptedHs, currArr, curr);
     }
     public List<List<String>> partition(String s) {
-        List<List<String>> arr = new ArrayList<List<String>>();
-        backtracking(s, arr, new ArrayList<String>(), 0, s.length());
+        List<List<String>> ans = new ArrayList<>();
+        HashSet<String> acceptedHs = new HashSet<>();
+        backtrack(s, 0, ans, acceptedHs, new ArrayList<>(), new StringBuilder());
 
-        return arr;
+        return ans;
     }
 }
