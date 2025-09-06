@@ -17,7 +17,7 @@ public:
             }
         }
 
-        for(int j = 0; j < m; j++) {
+        for(int j = 0; j < m; j++) { 
             if(matrix[0][j] == 0) {
                 if(j == 0) continue;
                 for(int i = 1; i < n; i++) {
