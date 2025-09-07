@@ -25,7 +25,7 @@ class Solution {
                 ans[ind++] = -temp;
                 temp--;
             }
-        }
+        } 
 
         return ans;
     }
