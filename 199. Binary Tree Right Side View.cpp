@@ -17,7 +17,7 @@ public:
         vector<int> res;
         if(root == NULL) return res;
         res.push_back(root -> val);
-        while(!levelQue.empty()){
+        while(!levelQue.empty()){  
             int len = levelQue.size();
             for(int i = 0; i < len; i++){
                 TreeNode* node = levelQue.front();
