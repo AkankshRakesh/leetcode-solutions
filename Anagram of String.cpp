@@ -1,4 +1,3 @@
-/*Complete the function below*/
 class GfG {
     public int remAnagrams(String s1, String s2) {
         int[] c1 = new int[26];
