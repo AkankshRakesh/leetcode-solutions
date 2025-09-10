@@ -14,4 +14,4 @@ public:
         if(nums[n - 1] > nums[0]) return false;
         return true;
     }
-};
+}; 
