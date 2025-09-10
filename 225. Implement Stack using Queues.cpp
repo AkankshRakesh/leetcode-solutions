@@ -1,33 +1,48 @@
 class MyStack {
-    Queue<Integer> q = new LinkedList<>();
+public:
+    queue<int> q;
 
-    public MyStack() {}
+    MyStack() {
+    }
 
-    private void shift() {
+    void shift() {
         int size = q.size() - 1;
         while (size > 0) {
-            q.offer(q.poll());
+            q.push(q.front());
+            q.pop();
             size--;
         }
     }
 
-    public void push(int x) {
-        q.offer(x);
+    void push(int x) {
+        q.push(x);
     }
 
-    public int pop() {
+    int pop() {
         shift();
-        return q.poll();
-    }
-
-    public int top() {
-        shift();
-        int val = q.poll(); 
-        q.offer(val);      
+        int val = q.front();
+        q.pop();
         return val;
     }
 
-    public boolean empty() {
-        return q.isEmpty();
+    int top() {
+        shift();
+        int val = q.front();
+        q.pop();
+        q.push(val); // put it back
+        return val;
     }
-}
+
+    bool empty() {
+        return q.empty();
+    }
+};
+
+/**
+ * Example usage:
+ * MyStack* obj = new MyStack();
+ * obj->push(x);
+ * int param_2 = obj->pop();
+ * int param_3 = obj->top();
+ * bool param_4 = obj->empty();
+ */
