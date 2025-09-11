@@ -16,6 +16,6 @@ int findPeakElement(int* nums, int n) {
         else {
             left = mid + 1;
         }
-    }
+    } 
     return -1;
 }
