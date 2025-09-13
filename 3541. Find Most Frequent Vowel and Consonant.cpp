@@ -1,27 +1,22 @@
 class Solution {
-    public boolean isVowel(char ch){
-        switch(ch){
-            case 'a':
-            case 'e':
-            case 'i':
-            case 'o':
-            case 'u':
-                return true;
+    static long MOD = (long)1e9 + 7;
+    public long fastPow(long n, long pow){
+        if(pow == 0) return 1;
+        else if(pow % 2 == 0){
+            long res = fastPow(n, pow / 2) % MOD;
+            return (res * res) % MOD;
         }
-        return false;
+        else{
+            return (n * (fastPow(n, pow - 1))) % MOD;
+        }
     }
-    public int maxFreqSum(String s) {
-        int[] freq = new int[26];
-        for(int i = 0; i < s.length(); i++){
-            freq[s.charAt(i) - 'a']++;
-        }
+    public int countGoodNumbers(long n) {
+        long even = (n + 1)/2;
+        long odd = n / 2;
+        
+        long part1 = fastPow(5, even) % MOD;
+        long part2 = fastPow(4, odd) % MOD;
 
-        int maxVowel = 0, maxCons = 0;
-        for(int i = 0; i < 26; i++){
-            if(isVowel((char)(i + 97))) maxVowel = Math.max(maxVowel, freq[i]);
-            else maxCons = Math.max(maxCons, freq[i]);
-        }
-
-        return maxVowel + maxCons;
+        return (int)((part1 * part2) % MOD);
     }
 }
