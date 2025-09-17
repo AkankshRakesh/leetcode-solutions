@@ -19,7 +19,7 @@ public:
             }
             st.push(Pair(temp[i], i));
         }
-
+        
         return ans;
     }
 };
