@@ -1,38 +1,36 @@
 class Solution {
-    public boolean check(String s){
-        int n = s.length();
-        int value = 0;
+    // public boolean check(String s){
+    //     int score = 0;
+    //     for(int i = 0; i < s.length(); i++){
+    //         if(s.charAt(i) == '(') score++;
+    //         else score--;
 
-        for(int i = n - 1; i >= 0; i--){
-            if(s.charAt(i) == ')') value++;
-            else value--;
-
-            if(value < 0) return false;
-        }
-        return true;
-    }
-    public void exploration(List<String> res, String s, int leftPara, int rightPara){
-        if(leftPara == 0 && rightPara == 0){
-            if(check(s)){
-                res.add(s);
-            }
+    //         if(score < 0) return false;
+    //     }
+    //     return true;
+    // }
+    public void backtrack(int open, int close, StringBuilder sb, int n, List<String> arr){
+        if(sb.length() == n * 2){
+            arr.add(sb.toString());
             return;
         }
-        else if(leftPara == 0){
-            exploration(res, s + ")", leftPara, rightPara - 1);
+
+        if(open < n){
+            sb.append('(');
+            backtrack(open + 1, close, sb, n, arr);
+            sb.deleteCharAt(sb.length() - 1);
         }
-        else if(rightPara == 0){
-            exploration(res, s + "(", leftPara - 1, rightPara);
-        }
-        else{
-            exploration(res, s + "(", leftPara - 1, rightPara);
-            exploration(res, s + ")", leftPara, rightPara - 1);
+
+        if(close < open){
+            sb.append(")");
+            backtrack(open, close + 1, sb, n, arr);
+            sb.deleteCharAt(sb.length() - 1);
         }
     }
     public List<String> generateParenthesis(int n) {
-        ArrayList<String> arr = new ArrayList<String>();
+        List<String> arr = new ArrayList<>();
+        backtrack(0, 0, new StringBuilder(), n, arr);
 
-        exploration(arr, "(", n - 1, n);
         return arr;
     }
 }
