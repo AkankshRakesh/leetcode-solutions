@@ -13,7 +13,7 @@ public:
             if (intervals[i][0] < intervals[last][1]) {
                 ++ans;
             } else {
-                last = i;
+                last = i; 
             }
         }
 
