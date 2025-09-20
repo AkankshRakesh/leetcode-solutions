@@ -22,9 +22,9 @@ class Solution {
         int ind = 0;
         while(!st.isEmpty()){
             // System.out.println(st.peek()[0]);
-            ans[ind++] = st.pop();
+            ans[ind++] = st.pop();   
         }
 
-        return ans;
+        return ans; 
     }
 }
