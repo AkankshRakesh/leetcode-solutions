@@ -22,6 +22,6 @@ public:
         }
 
         result.push_back({low, high});
-        return result;
+        return result; 
     }
 };
