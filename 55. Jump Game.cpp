@@ -14,3 +14,4 @@ public:
         return goal == 0;
     }
 };
+ 
