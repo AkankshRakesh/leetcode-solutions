@@ -18,7 +18,7 @@ class Solution {
                     i++;
                 }
             }
-        }
+        } 
 
         return s.substring(0, arr[s.length() - 1]);
     }
