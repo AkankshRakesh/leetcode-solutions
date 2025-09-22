@@ -17,7 +17,7 @@ public:
                     i++;
                 }
             }
-        }
+        } 
 
         return s.substr(0, arr[s.length() - 1]);
     }
