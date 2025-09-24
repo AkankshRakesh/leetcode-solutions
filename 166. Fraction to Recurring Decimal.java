@@ -18,7 +18,7 @@ class Solution {
                 break;
             }
             hm.put(remainder, ans.length());
-            remainder *= 10;
+            remainder *= 10; 
             ans.append(remainder / den);
             remainder %= den;
         }
