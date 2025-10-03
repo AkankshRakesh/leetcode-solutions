@@ -8,7 +8,7 @@ public:
         int numOfCols = heightMap[0].size();
 
         vector<vector<bool>> visited(numOfRows, vector<bool>(numOfCols, false));
-
+ 
         priority_queue<Cell> boundary;
 
         for (int i = 0; i < numOfRows; i++) {
