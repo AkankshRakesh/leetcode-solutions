@@ -10,7 +10,7 @@ public:
             if (height[left] < height[right]) {
                 maxSize = max(maxSize, height[left] * dist);
                 left++;
-            } else {
+            } else { 
                 maxSize = max(maxSize, height[right] * dist);
                 right--;
             }
