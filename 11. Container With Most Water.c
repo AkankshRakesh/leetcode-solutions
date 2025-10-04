@@ -10,7 +10,7 @@ int max(a,b){
     if(a > b){
         return a;
     }
-    else{
+    else{ 
         return b;
     }
 }
