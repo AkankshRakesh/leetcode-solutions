@@ -1,6 +1,3 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution {
 public:
     struct Pair {
@@ -12,7 +9,7 @@ public:
     struct Compare {
         bool operator()(const Pair& a, const Pair& b) {
             return a.value > b.value; // min-heap
-        }
+        } 
     };
 
     int swimInWater(vector<vector<int>>& grid) {
