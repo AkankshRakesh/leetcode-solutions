@@ -1,34 +1,31 @@
 class Solution {
-    class Pair{
-        int i;
-        int j;
-        public Pair(int i, int j){
-            this.i = i;
-            this.j = j;
+    int min = Integer.MAX_VALUE;
+    public void dfs(int[][] grid, boolean[][] visited, int i, int j, int maxPathCost){
+        int n = grid.length;
+
+        if (i < 0 || j < 0 || i >= n || j >= n || visited[i][j]) return;
+
+        maxPathCost = Math.max(maxPathCost, grid[i][j]);
+
+        if (i == n - 1 && j == n - 1) {
+            min = Math.min(min, maxPathCost);
+            return;
         }
+
+        visited[i][j] = true;
+
+        dfs(grid, visited, i + 1, j, maxPathCost);
+        dfs(grid, visited, i - 1, j, maxPathCost);
+        dfs(grid, visited, i, j + 1, maxPathCost);
+        dfs(grid, visited, i, j - 1, maxPathCost);
+
+        visited[i][j] = false;
+        
     }
     public int swimInWater(int[][] grid) {
-        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(grid[a.i][a.j], grid[b.i][b.j]));
         int n = grid.length;
-        int ans = 0;
-        pq.offer(new Pair(0, 0));
         boolean[][] visited = new boolean[n][n];
-        
-        while(!pq.isEmpty()){
-            Pair top = pq.poll();
-            int i = top.i;
-            int j = top.j;
-            visited[i][j] = true;
-            ans = Math.max(ans, grid[i][j]);
-
-            if(i - 1 >= 0 && !visited[i - 1][j]) pq.offer(new Pair(i - 1, j));   
-            if(i + 1 < n && !visited[i + 1][j]) pq.offer(new Pair(i + 1, j));   
-            if(j - 1 >= 0 && !visited[i][j - 1]) pq.offer(new Pair(i, j - 1));   
-            if(j + 1 < n && !visited[i][j + 1]) pq.offer(new Pair(i, j + 1));   
-            
-            if(i == n - 1 && j == n - 1) break;
-        }
-
-        return ans;
+        dfs(grid, visited, 0, 0, 0);
+        return min;
     }
 }
