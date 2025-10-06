@@ -1,37 +1,32 @@
 class Solution {
     class Pair{
-        Integer value;
-        int[] index;
-        public Pair(Integer value, int[] index){
-            this.value = value;
-            this.index = index;
+        int i;
+        int j;
+        public Pair(int i, int j){
+            this.i = i;
+            this.j = j;
         }
     }
     public int swimInWater(int[][] grid) {
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(grid[a.i][a.j], grid[b.i][b.j]));
         int n = grid.length;
-        int m = grid[0].length;
-        int[][] dp = new int[n][m];
-
-        for(int i = 0; i < n; i++) for(int j = 0; j < m; j++) dp[i][j] = Integer.MAX_VALUE;
-        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.value, b.value));
-        pq.offer(new Pair(grid[0][0], new int[]{0, 0}));
-        int curr = Integer.MIN_VALUE;
-        int ans = Integer.MAX_VALUE;
-
+        int ans = 0;
+        pq.offer(new Pair(0, 0));
+        boolean[][] visited = new boolean[n][n];
+        
         while(!pq.isEmpty()){
             Pair top = pq.poll();
-            int i = top.index[0];
-            int j = top.index[1];
-            if(top.value > dp[i][j]) continue;
+            int i = top.i;
+            int j = top.j;
+            visited[i][j] = true;
+            ans = Math.max(ans, grid[i][j]);
+
+            if(i - 1 >= 0 && !visited[i - 1][j]) pq.offer(new Pair(i - 1, j));   
+            if(i + 1 < n && !visited[i + 1][j]) pq.offer(new Pair(i + 1, j));   
+            if(j - 1 >= 0 && !visited[i][j - 1]) pq.offer(new Pair(i, j - 1));   
+            if(j + 1 < n && !visited[i][j + 1]) pq.offer(new Pair(i, j + 1));   
             
-            dp[i][j] = curr;
-            if(i + 1 < n && dp[i + 1][j] > curr) pq.offer(new Pair(grid[i + 1][j], new int[]{i + 1, j}));
-            if(j + 1 < m && dp[i][j + 1] > curr) pq.offer(new Pair(grid[i][j + 1], new int[]{i, j + 1}));
-            if(i - 1 >= 0 && dp[i - 1][j] > curr) pq.offer(new Pair(grid[i - 1][j], new int[]{i - 1, j}));
-            if(j - 1 >= 0 && dp[i][j - 1] > curr) pq.offer(new Pair(grid[i][j - 1], new int[]{i, j - 1}));
-            System.out.println(top.value);
-            curr = Math.max(curr, top.value);
-            if(i + 1 >= n && j + 1 >= m) ans = Math.min(ans, curr);
+            if(i == n - 1 && j == n - 1) break;
         }
 
         return ans;
