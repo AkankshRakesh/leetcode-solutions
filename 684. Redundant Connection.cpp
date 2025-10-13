@@ -16,7 +16,7 @@ public:
         }
 
         return isFound;
-    }
+    } 
 
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
         int N = edges.size();
