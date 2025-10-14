@@ -26,7 +26,7 @@ class Solution {
     }
     public int maxPathSum(TreeNode root) {
         ans = root.val;
-        trav(root);
+        trav(root); 
         return ans;
     }
 }
