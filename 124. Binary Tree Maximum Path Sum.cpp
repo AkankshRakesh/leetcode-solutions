@@ -12,7 +12,7 @@
  *         this.right = right;
  *     }
  * }
- */
+ */ 
 class Solution {
     public int bfs(TreeNode node, int[] sum){
         if(node == null) return 0;
