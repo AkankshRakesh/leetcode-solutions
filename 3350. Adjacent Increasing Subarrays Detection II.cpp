@@ -18,7 +18,7 @@ public:
         for (int i = 0; i <= n - 2 * k; ++i) {
             if (streak[i] >= k - 1 && streak[i + k] >= k - 1) {
                 found = true;
-                break;
+                break; 
             }
         }
 
