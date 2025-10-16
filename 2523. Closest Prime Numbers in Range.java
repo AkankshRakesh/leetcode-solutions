@@ -1,52 +1,33 @@
 class Solution {
+    public int[] closestPrimes(int leftRange, int rightRange) {
+        int n = rightRange - leftRange + 1;
+        int rootn = (int)Math.sqrt(rightRange);
+        boolean[] sieve = new boolean[rightRange + 1];
 
-    public int[] closestPrimes(int left, int right) {
-        int[] sieveArray = sieve(right);
-
-        List<Integer> primeNumbers = new ArrayList<>(); 
-        for (int num = left; num <= right; num++) {
-            if (sieveArray[num] == 1) {
-                primeNumbers.add(num);
+        for(int i = 2; i * i <= rightRange; i++){
+            if(!sieve[i]){
+                for(int j = i + i; j <= rightRange; j += i) sieve[j] = true;
             }
         }
 
-        if (primeNumbers.size() < 2) return new int[] { -1, -1 }; 
-
-        int minDifference = Integer.MAX_VALUE;
-        int[] closestPair = new int[2];
-        Arrays.fill(closestPair, -1);
-
-        for (int index = 1; index < primeNumbers.size(); index++) {
-            int difference =
-                primeNumbers.get(index) - primeNumbers.get(index - 1);
-            if (difference < minDifference) {
-                minDifference = difference;
-                closestPair[0] = primeNumbers.get(index - 1);
-                closestPair[1] = primeNumbers.get(index);
-            }
+        ArrayList<Integer> primes = new ArrayList<>();
+        for(int i = leftRange; i <= rightRange; i++){
+            if(!sieve[i]) primes.add(i);
         }
 
-        return closestPair;
-    }
-
-    public int[] sieve(int upperLimit) {
-        int[] sieve = new int[upperLimit + 1];
-        Arrays.fill(sieve, 1);
-
-        sieve[0] = 0;
-        sieve[1] = 0;
-
-        for (int number = 2; number * number <= upperLimit; number++) {
-            if (sieve[number] == 1) {
-                for (
-                    int multiple = number * number;
-                    multiple <= upperLimit;
-                    multiple += number
-                ) {
-                    sieve[multiple] = 0;
-                }
-            }
+        // if(primes.size() == 0) return new int[]{-1, -1};
+        int ans = Integer.MAX_VALUE;
+        int[] ansArr = new int[2];
+        for(int i = 1; i < primes.size(); i++){
+            if(primes.get(i) == 2) continue; 
+            if(primes.get(i) - primes.get(i - 1) < ans){
+                ans = primes.get(i) - primes.get(i - 1);
+                ansArr[0] = primes.get(i - 1);
+                ansArr[1] = primes.get(i);
+            } 
         }
-        return sieve;
+
+        if(ans == Integer.MAX_VALUE) return new int[]{-1, -1};
+        return ansArr;
     }
 }
