@@ -1,36 +1,30 @@
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
 class Solution {
 public:
-    TreeNode* build(queue<int>& preQ, vector<int> inOrder){
-        if(inOrder.empty()) return nullptr;
+    TreeNode* build(queue<int>& preOrder, vector<int>& inorder, unordered_map<int, int>& hm, int lastInd) {
+        if (preOrder.empty()) return nullptr;
 
-        int val = preQ.front();
-        preQ.pop();
-        auto it = find(inOrder.begin(), inOrder.end(), val);
-        int idx = it - inOrder.begin();
+        int val = preOrder.front();
+        int index = hm[val];
 
-        TreeNode* root = new TreeNode(val);
+        if (index > lastInd) return nullptr;
 
-        vector<int> left(inOrder.begin(), inOrder.begin() + idx);
-        vector<int> right(inOrder.begin() + idx + 1, inOrder.end());
+        preOrder.pop();
+        TreeNode* curr = new TreeNode(val);
+        curr->left = build(preOrder, inorder, hm, index);
+        curr->right = build(preOrder, inorder, hm, lastInd);
 
-        root -> left = build(preQ, left);
-        root -> right = build(preQ, right);
-
-        return root;
+        return curr;
     }
+
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        queue<int> preQueue(preorder.begin(), preorder.end());
-        return build(preQueue, inorder);
+        unordered_map<int, int> hm;
+        for (int i = 0; i < (int)inorder.size(); i++) {
+            hm[inorder[i]] = i;
+        }
+
+        queue<int> q;
+        for (int node : preorder) q.push(node);
+
+        return build(q, inorder, hm, inorder.size() - 1);
     }
 };
