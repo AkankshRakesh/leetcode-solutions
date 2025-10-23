@@ -15,6 +15,6 @@ public:
             }
             prev = num;
         }
-        return true;
+        return true; 
     } 
 };
