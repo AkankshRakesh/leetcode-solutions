@@ -12,6 +12,6 @@ public:
             currStock = prices[i];
         }
 
-        return profit;
+        return profit; 
     }
 };
