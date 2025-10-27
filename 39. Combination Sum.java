@@ -1,27 +1,24 @@
 class Solution {
-    public void backtrack(int[] candidates, int target, List<List<Integer>> arr, int index, int n, int currSum, ArrayList<Integer> currArr){
-        if(index == n){
-            if(currSum == target){
-                arr.add(new ArrayList<>(currArr));
-            }
-            return;
-        }
-
+    HashSet<List<Integer>> hs = new HashSet<>();
+    public void backtrack(int[] candidates, int index, int target, List<Integer> curr, int currSum){
         if(currSum == target){
-            arr.add(new ArrayList<>(currArr));
+            hs.add(new ArrayList<>(curr));
             return;
         }
+        if(currSum > target || index >= candidates.length) return;
 
-        if(currSum + candidates[index] > target) return;
-        currArr.add(candidates[index]);
-        backtrack(candidates, target, arr, index, n, currSum + candidates[index], currArr);
-        currArr.remove(currArr.size() - 1);
-        backtrack(candidates, target, arr, index + 1, n, currSum, currArr);
+        curr.add(candidates[index]);
+        backtrack(candidates, index, target, curr, currSum + candidates[index]);
+        curr.remove(curr.size() - 1);
+        
+        backtrack(candidates, index + 1, target, curr, currSum);
     }
     public List<List<Integer>> combinationSum(int[] candidates, int target) {
-        Arrays.sort(candidates);
-        List<List<Integer>> arr = new ArrayList<List<Integer>>();
-        backtrack(candidates, target, arr, 0, candidates.length, 0, new ArrayList<>());
-        return arr;
+        backtrack(candidates, 0, target, new ArrayList<Integer>(), 0);
+
+        List<List<Integer>> ans = new ArrayList<>();
+        for(List<Integer> arr : hs) ans.add(arr);
+
+        return ans;
     }
 }
