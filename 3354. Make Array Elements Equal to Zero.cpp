@@ -2,39 +2,24 @@ class Solution {
 public:
     int countValidSelections(vector<int>& nums) {
         int n = nums.size();
-        int validCount = 0;
+        vector<int> prefix(n, 0), suffix(n, 0);
+        
+        for (int i = 1; i < n; i++) {
+            prefix[i] = prefix[i - 1] + nums[i - 1];
+        }
+        for (int i = n - 2; i >= 0; i--) {
+            suffix[i] = suffix[i + 1] + nums[i + 1];
+        }
 
-        auto simulate = [&](int start, int direction) -> bool {
-            vector<int> arr = nums;
-            int curr = start;
-            int move = direction;
-
-            while (curr >= 0 && curr < n) {
-                if (arr[curr] == 0) {
-                    curr += move;
-                } else {
-                    arr[curr]--;
-                    move = -move;
-                    curr += move;
-                }
-            }
-
-            for (int num : arr) {
-                if (num != 0)
-                    return false;
-            }
-            return true;
-        };
-
-        for (int i = 0; i < n; ++i) {
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
             if (nums[i] == 0) {
-                if (simulate(i, 1))
-                    validCount++;
-                if (simulate(i, -1))
-                    validCount++;
+                if (prefix[i] == suffix[i]) ans += 2;
+                else if (prefix[i] + 1 == suffix[i]) ans++;
+                else if (prefix[i] == suffix[i] + 1) ans++;
             }
         }
 
-        return validCount;
+        return ans;
     }
 };
