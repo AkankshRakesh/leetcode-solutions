@@ -1,21 +1,28 @@
 class Solution {
 public:
+    bool check(char top, char curr) {
+        if ((top == '(' && curr == ')') || 
+            (top == '[' && curr == ']') || 
+            (top == '{' && curr == '}'))
+            return true;
+        return false;
+    }
+
     bool isValid(string s) {
-        int len = s.size();
-        if(len == 1) return false;
-        vector<int> arr;
-        for(int i = 0; i < len; i++){
-            if(s[i] == '(' || s[i] == '{' || s[i] == '['){
-                arr.push_back(s[i]);
+        stack<char> st;
+        for (char ch : s) {
+            if (st.empty()) {
+                st.push(ch);
+                continue;
             }
-            else{
-                if(arr.size() == 0) return false;
-                if(s[i] == ')' && arr[arr.size() - 1] != '(') return false;
-                else if(s[i] == '}' && arr[arr.size() - 1] != '{') return false;
-                else if(s[i] == ']' && arr[arr.size() - 1] != '[') return false;
-                arr.pop_back();
-            }
+            char top = st.top();
+            if (check(top, ch))
+                st.pop();
+            else
+                st.push(ch);
         }
-        return arr.size() == 0;
+
+        if (st.size() != 0) return false;
+        return true;
     }
 };
