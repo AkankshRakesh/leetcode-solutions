@@ -1,13 +1,4 @@
-// User function Template for Java
-
 class Solution {
-    // static int fastPow(int n, int pow){
-    //     if(pow == 1) return n;
-    //     if(pow % 2 != 0) return n * fastPow(n, pow - 1);
-        
-    //     int num = fastPow(n, pow / 2);
-    //     return num * num;
-    // }
     static boolean operations(int n){
         if(n == 1 || n == 7) return true;
         if(n < 10) return false;
