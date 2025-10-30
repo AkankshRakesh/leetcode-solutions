@@ -17,5 +17,5 @@ class Solution {
             if(operations(num)) return num;
             num++;
         }
-    }
+    } 
 }
