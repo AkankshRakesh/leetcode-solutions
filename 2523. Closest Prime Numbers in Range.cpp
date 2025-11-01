@@ -25,7 +25,7 @@ class Solution {
                 ansArr[0] = primes.get(i - 1);
                 ansArr[1] = primes.get(i);
             } 
-        }
+        } 
 
         if(ans == Integer.MAX_VALUE) return new int[]{-1, -1};
         return ansArr;
