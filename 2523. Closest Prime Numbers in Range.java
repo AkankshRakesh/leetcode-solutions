@@ -1,33 +1,34 @@
 class Solution {
-    public int[] closestPrimes(int leftRange, int rightRange) {
-        int n = rightRange - leftRange + 1;
-        int rootn = (int)Math.sqrt(rightRange);
-        boolean[] sieve = new boolean[rightRange + 1];
+    public int[] closestPrimes(int left, int right) {
+        boolean[] isPrime = new boolean[right + 1];
+        for(int i = 2; i <= right; i++) isPrime[i] = true;
 
-        for(int i = 2; i * i <= rightRange; i++){
-            if(!sieve[i]){
-                for(int j = i + i; j <= rightRange; j += i) sieve[j] = true;
+        for(int i = 2; i * i <= right; i++){
+            if(isPrime[i]){
+                for(int j = i + i; j <= right; j += i) isPrime[j] = false;
             }
         }
 
-        ArrayList<Integer> primes = new ArrayList<>();
-        for(int i = leftRange; i <= rightRange; i++){
-            if(!sieve[i]) primes.add(i);
-        }
-
-        // if(primes.size() == 0) return new int[]{-1, -1};
+        int lastPrime = -1;
         int ans = Integer.MAX_VALUE;
-        int[] ansArr = new int[2];
-        for(int i = 1; i < primes.size(); i++){
-            if(primes.get(i) == 2) continue; 
-            if(primes.get(i) - primes.get(i - 1) < ans){
-                ans = primes.get(i) - primes.get(i - 1);
-                ansArr[0] = primes.get(i - 1);
-                ansArr[1] = primes.get(i);
-            } 
+        int leastDiff[] = new int[2];
+        leastDiff[0] = -1;
+        leastDiff[1] = -1;
+
+        for(int i = left; i <= right; i++){
+            if(isPrime[i]){
+                if(lastPrime == -1) lastPrime = i;
+                else{
+                    if(ans > i - lastPrime){
+                        ans = i - lastPrime;
+                        leastDiff[0] = lastPrime;
+                        leastDiff[1] = i;
+                    }
+                    lastPrime = i;
+                }
+            }
         }
 
-        if(ans == Integer.MAX_VALUE) return new int[]{-1, -1};
-        return ansArr;
+        return leastDiff;
     }
 }
