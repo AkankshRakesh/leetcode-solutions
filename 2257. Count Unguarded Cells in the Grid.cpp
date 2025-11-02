@@ -1,46 +1,40 @@
 class Solution {
 public:
-    int countUnguarded(int m, int n, vector<vector<int>>& guards, vector<vector<int>>& walls) {
-        int res = m * n - (int)walls.size() - (int)guards.size();
-        int grid[m][n];
-        memset(grid, 0, sizeof(grid));
-        for (auto& wall : walls)
-            grid[wall[0]][wall[1]] = 1;
-        for (auto& guard : guards)
-            grid[guard[0]][guard[1]] = 2;
-        for (int r = 0; r < m; r++){
-            for (int c = 0; c < n; c++){
-                if (grid[r][c] != 2)
-                    continue;
-                for (int i = r - 1; i >= 0 && grid[i][c] <= 0; i--){
-                    if (!grid[i][c]){
-                        res--;
-                        grid[i][c] = -1;
-                    }
-                }
-                // down
-                for (int i = r + 1; i < m && grid[i][c] <= 0; i++){
-                    if (!grid[i][c]){
-                        res--;
-                        grid[i][c] = -1;
-                    }
-                }
-                // left
-                for (int i = c - 1; i >= 0 && grid[r][i] <= 0; i--){
-                    if (!grid[r][i]){
-                        grid[r][i] = -1;
-                        res--;
-                    }
-                }
-                // right
-                for (int i = c + 1; i < n && grid[r][i] <= 0; i++){
-                    if (!grid[r][i]){
-                        res--;
-                        grid[r][i] = -1;
-                    }
+    void iterate(vector<vector<char>>& guarded, int x, int y, int n, int m) {
+        for (int i = x - 1; i >= 0 && (guarded[i][y] == '-' || guarded[i][y] == '+'); i--)
+            guarded[i][y] = '+';
+        
+        for (int i = x + 1; i < n && (guarded[i][y] == '-' || guarded[i][y] == '+'); i++)
+            guarded[i][y] = '+';
+        
+        for (int j = y - 1; j >= 0 && (guarded[x][j] == '-' || guarded[x][j] == '+'); j--)
+            guarded[x][j] = '+';
+        
+        for (int j = y + 1; j < m && (guarded[x][j] == '-' || guarded[x][j] == '+'); j++)
+            guarded[x][j] = '+';
+    }
+
+    int countUnguarded(int n, int m, vector<vector<int>>& guards, vector<vector<int>>& walls) {
+        vector<vector<char>> guarded(n, vector<char>(m, '-'));
+
+        for (auto& gc : guards) guarded[gc[0]][gc[1]] = 'G';
+        for (auto& wc : walls) guarded[wc[0]][wc[1]] = 'W';
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (guarded[i][j] == 'G') {
+                    iterate(guarded, i, j, n, m);
                 }
             }
         }
-        return res;    
+
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (guarded[i][j] == '-') ans++;
+            }
+        }
+
+        return ans;
     }
 };
