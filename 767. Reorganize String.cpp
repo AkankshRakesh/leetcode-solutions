@@ -1,56 +1,44 @@
-#include <bits/stdc++.h>
-using namespace std;
-
 class Solution {
 public:
     struct Pair {
+        char ch;
         int count;
-        char letter;
-        Pair(char l, int c) : count(c), letter(l) {}
+        Pair(char c, int cnt) : ch(c), count(cnt) {}
     };
 
     struct Compare {
         bool operator()(const Pair& a, const Pair& b) {
-            return a.count < b.count; // max heap
+            return a.count < b.count; 
         }
     };
 
     string reorganizeString(string s) {
-        string result;
         priority_queue<Pair, vector<Pair>, Compare> pq;
         unordered_map<char, int> freq;
-        int n = s.size();
 
-        for (int i = 0; i < n; i++) {
-            freq[s[i]]++;
-        }
+        for (char ch : s) freq[ch]++;
 
-        for (auto& [ch, cnt] : freq) {
-            pq.push(Pair(ch, cnt));
-        }
+        for (auto& [ch, cnt] : freq) pq.push(Pair(ch, cnt));
+
+        string result;
 
         while (!pq.empty() && pq.size() >= 2) {
             Pair first = pq.top(); pq.pop();
             Pair second = pq.top(); pq.pop();
 
-            if (result.empty() || result.back() != first.letter) {
-                result.push_back(first.letter);
-                result.push_back(second.letter);
-            } else {
-                result.push_back(second.letter);
-                result.push_back(first.letter);
-            }
+            result += first.ch;
+            result += second.ch;
 
-            if (first.count > 1) pq.push(Pair(first.letter, first.count - 1));
-            if (second.count > 1) pq.push(Pair(second.letter, second.count - 1));
+            if (first.count > 1) pq.push(Pair(first.ch, first.count - 1));
+            if (second.count > 1) pq.push(Pair(second.ch, second.count - 1));
         }
 
         if (!pq.empty()) {
             Pair last = pq.top();
-            if (result.empty() || result.back() != last.letter) {
-                if (last.count > 1) return "";
-                result.push_back(last.letter);
-            } else return "";
+            if (last.count == 1 && (result.empty() || result.back() != last.ch))
+                result += last.ch;
+            else
+                return "";
         }
 
         return result;
