@@ -1,4 +1,4 @@
-// User function Template for Java
+// User function Template for Cpp
 class Solution {
     public int[] primeTwins(int L, int R) {
         boolean[] isPrime = new boolean[R + 1];
