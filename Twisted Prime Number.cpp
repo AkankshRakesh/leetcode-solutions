@@ -1,4 +1,4 @@
-// User function Template for Java
+// User function Template for Cpp
 
 class Solution {
     public boolean isPrime(int n){
