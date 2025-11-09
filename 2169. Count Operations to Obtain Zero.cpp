@@ -1,5 +1,6 @@
 class Solution {
-    public int countOperations(int num1, int num2) {
+public:
+    int countOperations(int num1, int num2) {
         int ans = 0;
         while(num1 != 0 && num2 != 0){
             ans++;
@@ -9,4 +10,4 @@ class Solution {
 
         return ans;
     }
-}
+};
