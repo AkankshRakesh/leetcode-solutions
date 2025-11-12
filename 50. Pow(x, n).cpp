@@ -20,7 +20,7 @@ public:
     }
 
     double myPow(double x, int n) {
-        unordered_map<string, double> hm;
+        unordered_map<string, double> hm; 
 
         long long N = n; 
         if (N < 0) {
