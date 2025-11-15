@@ -1,63 +1,86 @@
 class Twitter {
-    int timestamp = 0;
     class Pair{
-        int tweetId;
         int time;
-        public Pair(int tweetId, int time){
+        int tweetId;
+        public Pair(int time, int tweetId){
             this.time = time;
             this.tweetId = tweetId;
         }
     }
-    HashMap<Integer, HashSet<Integer>> follows = new HashMap<>();
-    HashMap<Integer, ArrayList<Pair>> tweets = new HashMap<>();
+    HashMap<Integer, ArrayList<Pair>> userTweets = new HashMap<>();
+    HashMap<Integer, ArrayList<Integer>> userFollows = new HashMap<>();
+    int time = 0;
     public Twitter() {
         
     }
     
     public void postTweet(int userId, int tweetId) {
-        tweets.putIfAbsent(userId, new ArrayList<>());
-        tweets.get(userId).add(new Pair(tweetId, timestamp++));
+        if(!userTweets.containsKey(userId)){
+            ArrayList<Pair> arr = new ArrayList<>();
+            arr.add(new Pair(time, tweetId));
+            userTweets.put(userId, arr);
+        }    
+        else{
+            userTweets.get(userId).add(new Pair(time, tweetId));
+        }
+        if(!userFollows.containsKey(userId)){
+            ArrayList<Integer> follows = new ArrayList<>();
+            follows.add(userId);
+            userFollows.put(userId, follows);
+        }
+        time++;
     }
     
     public List<Integer> getNewsFeed(int userId) {
         List<Integer> ans = new ArrayList<>();
-        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(b.time, a.time));
-        int count = 0;
-        if(tweets.containsKey(userId)){
-            for(int i = tweets.get(userId).size() - 1; i >= 0 && count < 10; i--, count++){
-                pq.offer(new Pair(tweets.get(userId).get(i).tweetId, tweets.get(userId).get(i).time));
+        if (!userFollows.containsKey(userId)) return ans;
+
+        ArrayList<Integer> follows = userFollows.get(userId);
+
+        int[] inds = new int[follows.size()];
+        for(int i = 0; i < follows.size(); i++){
+            ArrayList<Pair> tweets = userTweets.get(follows.get(i));
+            if (tweets == null || tweets.size() == 0) {
+                inds[i] = -1;
+            } else {
+                inds[i] = tweets.size() - 1;
             }
         }
-        
-        if(follows.containsKey(userId)){
-            for(int followers : follows.get(userId)){
-                count = 0;
-                if(tweets.containsKey(followers)){
-                    for(int i = tweets.get(followers).size() - 1; i >= 0 && count < 10; i--, count++){
-                        pq.offer(new Pair(tweets.get(followers).get(i).tweetId, tweets.get(followers).get(i).time));
+        while(ans.size() != 10){
+            int mostRecentId = -1;
+            int mostRecentIdTime = -1;
+            int userSelected = -1;
+
+            for(int i = 0; i < follows.size(); i++){
+                ArrayList<Pair> tweets = userTweets.get(follows.get(i));
+                if(inds[i] >= 0){
+                    if(tweets.get(inds[i]).time > mostRecentIdTime){
+                        mostRecentIdTime = tweets.get(inds[i]).time;
+                        mostRecentId = tweets.get(inds[i]).tweetId;
+                        userSelected = i;
                     }
                 }
             }
-        }
 
-        count = 0;
-        while(!pq.isEmpty() && count < 10){
-            ans.add(pq.poll().tweetId);
-            count++;
+            if(mostRecentId == -1) break;
+            inds[userSelected]--;
+            ans.add(mostRecentId);
         }
 
         return ans;
     }
     
     public void follow(int followerId, int followeeId) {
-        follows.putIfAbsent(followerId, new HashSet<>());
-        follows.get(followerId).add(followeeId);
+        userFollows.putIfAbsent(followerId, new ArrayList<>());
+        ArrayList<Integer> follows = userFollows.get(followerId);
+
+        if (!follows.contains(followerId)) follows.add(followerId);
+
+        if (!follows.contains(followeeId)) follows.add(followeeId);
     }
     
     public void unfollow(int followerId, int followeeId) {
-        if (follows.containsKey(followerId)) {
-            follows.get(followerId).remove(followeeId);
-        }
+        userFollows.get(followerId).remove((Integer)followeeId);
     }
 }
 
