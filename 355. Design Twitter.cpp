@@ -16,7 +16,7 @@ class Twitter {
     
     public void postTweet(int userId, int tweetId) {
         tweets.putIfAbsent(userId, new ArrayList<>());
-        tweets.get(userId).add(new Pair(tweetId, timestamp++));
+        tweets.get(userId).add(new Pair(tweetId, timestamp++)); 
     }
     
     public List<Integer> getNewsFeed(int userId) {
