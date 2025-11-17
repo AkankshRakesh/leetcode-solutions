@@ -38,7 +38,7 @@ public:
 
     int totalNQueens(int n) {
         vector<vector<bool>> queens(n, vector<bool>(n, false));
-        backtrack(queens, 0);
+        backtrack(queens, 0); 
         return ans;
     }
 };
