@@ -1,29 +1,16 @@
 class Solution {
-    public boolean backtrack(int[] nums, int index, long target, HashSet<Integer> hs, long curr){
-        if(curr > target) return false;
-        if(curr == target) return true;
-        if(index >= nums.length) return false;
+    public boolean backtrack(int[] nums, int index, long target, long currMult){
+        if(currMult == target) return true;
+        if(index >= nums.length || currMult > target) return false;
 
-        // System.out.println(curr);
-        boolean add = backtrack(nums, index + 1, target, hs, curr * nums[index]);
-        if(add){
-            hs.add(nums[index]);
-            return true;
-        }
-
-        return backtrack(nums, index + 1, target, hs, curr);
+        return backtrack(nums, index + 1, target, currMult * nums[index]) || backtrack(nums, index + 1, target, currMult);
     }
     public boolean checkEqualPartitions(int[] nums, long target) {
-        HashSet<Integer> hs = new HashSet<>();
+        // if(target % 2 != 0) return false;
+        long mult = 1;
+        for(int num : nums) mult *= num;
+        if(mult != target * target) return false;
 
-        boolean ans = backtrack(nums, 0, target, hs, 1);
-        if(!ans) return false;
-
-        long product = 1;
-        for(int num : nums){
-            if(!hs.contains(num)) product *= num;
-        }
-
-        return product == target;
+        return backtrack(nums, 0, target, 1);
     }
 }
