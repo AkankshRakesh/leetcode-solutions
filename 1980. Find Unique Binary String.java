@@ -1,11 +1,30 @@
 class Solution {
-    public String findDifferentBinaryString(String[] nums) {
-        StringBuilder ans = new StringBuilder();
-        for (int i = 0; i < nums.length; i++) {
-            Character curr = nums[i].charAt(i);
-            ans.append(curr == '0' ? '1' : '0');
+    String ans;
+    public boolean backtrack(StringBuilder curr, int len, HashSet<String> hs){
+        if(curr.length() == len){
+            if(!hs.contains(curr.toString())){
+                ans = curr.toString();
+                return true;
+            }
+            return false;
         }
-        
-        return ans.toString();
+
+        curr.append("0");
+        boolean res = backtrack(curr, len, hs);
+        curr.deleteCharAt(curr.length() - 1);
+        if(res) return res;
+
+        curr.append("1");
+        res = backtrack(curr, len, hs);
+        curr.deleteCharAt(curr.length() - 1);
+
+        return res;
+    }
+    public String findDifferentBinaryString(String[] nums) {
+        HashSet<String> hs = new HashSet<>();
+        for(String s : nums) hs.add(s);
+
+        backtrack(new StringBuilder(), nums[0].length(), hs);
+        return ans;
     }
 }
