@@ -1,29 +1,23 @@
 class Solution {
-    public void recursion(int[] nums, boolean[] visited, ArrayList<Integer> curr, List<List<Integer>> ans, int n){
-        for(int i = 0; i < n; i++){
-            if(visited[i]) continue;
-            curr.add(nums[i]);
-            visited[i] = true;
-            recursion(nums, visited, curr, ans, n);
-            curr.remove(curr.size() - 1);
-            visited[i] = false;
+    public void backtrack(List<List<Integer>> ans, List<Integer> arr, int[] nums, int index, HashSet<Integer> added){
+        if(index >= nums.length){
+            ans.add(new ArrayList<>(arr));
+            return;
         }
-        if(curr.size() != n) return;
-        ans.add(new ArrayList<>(curr));
+
+        for(int i = 0; i < nums.length; i++){
+            if(added.contains(nums[i])) continue;
+            arr.add(nums[i]);
+            added.add(nums[i]);
+            backtrack(ans, arr, nums, index + 1, added);
+            arr.remove(arr.size() - 1);
+            added.remove(nums[i]);
+        }
     }
     public List<List<Integer>> permute(int[] nums) {
-        int n = nums.length;
-        boolean[] visited = new boolean[n];
         List<List<Integer>> ans = new ArrayList<>();
-        ArrayList<Integer> temp = new ArrayList<>(); 
-
-        for(int i = 0; i < n; i++){
-            visited[i] = true;
-            temp.add(nums[i]);
-            recursion(nums, visited, temp, ans, n);
-            temp.remove(temp.size() - 1);    
-            visited[i] = false;
-        }
+        HashSet<Integer> added = new HashSet<>();
+        backtrack(ans, new ArrayList<>(), nums, 0, added);
 
         return ans;
     }
