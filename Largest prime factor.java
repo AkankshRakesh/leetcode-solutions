@@ -2,16 +2,15 @@
 
 class Solution {
     static int largestPrimeFactor(int n) {
-        int max = Integer.MIN_VALUE;
+        int ans = -1;
         for(int i = 2; i * i <= n; i++){
             if(n % i == 0){
-                max = Math.max(max, i);
+                ans = i;
                 while(n % i == 0) n /= i;
             }
         }
         
-        if(n > 2) max = Math.max(max, n);
-        
-        return max;
+        ans = Math.max(ans, n);
+        return ans;
     }
 }
