@@ -1,38 +1,46 @@
 class Solution {
     public int maxSumDivThree(int[] nums) {
         int sum = 0;
-        int twoC = 0, oneC = 0;
-        int m = Integer.MAX_VALUE;
-        int n = Integer.MAX_VALUE;
-        int p = Integer.MAX_VALUE;
-        int q = Integer.MAX_VALUE;
-        for (int num : nums) {
+        int firstFor1 = -1;
+        int secondFor1 = -1;
+        int firstFor2 = -1;
+        int secondFor2 = -1;
+        for(int num : nums){
             sum += num;
-            if (num % 3 == 1) {
-                if (num < p) {
-                    q = p;
-                    p = num;
-                } else if (num < q) {
-                    q = num;
-                }
-            } else if (num % 3 == 2) {
-                if (num < m) {
-                    n = m;
-                    m = num;
-                } else if (num < n) {
-                    n = num;
+            if(num % 3 == 1){
+                if(firstFor1 == -1) firstFor1 = num;
+                else{
+                    if(firstFor1 > num){
+                        secondFor1 = firstFor1;
+                        firstFor1 = num;
+                    }
+                    else if(secondFor1 == -1 || secondFor1 > num) secondFor1 = num;
                 }
             }
+            else if(num % 3 == 2){
+                if(firstFor2 == -1) firstFor2 = num;
+                else{
+                    if(firstFor2 > num){
+                        secondFor2 = firstFor2;
+                        firstFor2 = num;
+                    }
+                    else if(secondFor2 == -1 || secondFor2 > num) secondFor2 = num;
+                }
+                // System.out.println(firstFor2 + " " + secondFor2);
+            }
         }
-
-
-        if(sum % 3 == 0) return sum;
-        int ans = Integer.MIN_VALUE;
-        if(m != Integer.MAX_VALUE && (sum - m) % 3 == 0) ans = Math.max(ans, sum - m);
-        if(n != Integer.MAX_VALUE && (sum - n - m) % 3 == 0) ans = Math.max(ans, sum - n - m);
-        if(p != Integer.MAX_VALUE && (sum - p) % 3 == 0) ans = Math.max(ans, sum - p);
-        if(q != Integer.MAX_VALUE && (sum - p - q) % 3 == 0) ans = Math.max(ans, sum - p - q);
-
-        return ans;
+        // System.out.println(firstFor1 + "-" + secondFor1);
+        
+        if(sum % 3 == 1){
+            if(firstFor1 == -1) return sum - firstFor2 - secondFor2;
+            else if(secondFor2 != -1) return Math.max(sum - firstFor1, sum - firstFor2 - secondFor2);
+            return sum - firstFor1;
+        }
+        else if(sum % 3 == 2){
+            if(firstFor2 == -1) return sum - firstFor1 - secondFor1;
+            else if(secondFor1 != -1) return Math.max(sum - firstFor2, sum - secondFor1 - firstFor1);
+            return sum - firstFor2;
+        }
+        return sum;
     }
 }
