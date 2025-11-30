@@ -1,13 +1,12 @@
 class Solution {
 public:
     int minSubarray(vector<int>& nums, int p) {
-        long long totalSum = 0;  // Use long long to avoid overflow
+        long long totalSum = 0;  
         for (int num : nums) {
             totalSum += num;
         }
         int remainder = totalSum % p;
 
-        // If the total sum is already divisible by p, return 0
         if (remainder == 0) {
             return 0;
         }
@@ -17,10 +16,10 @@ public:
 
 private:
     int findSmallestSubarray(vector<int>& nums, int p, int remainder) {
-        long long prefixSum = 0;  // Use long long to avoid overflow
+        long long prefixSum = 0; 
         int minLength = nums.size();
         unordered_map<int, int> prefixMap;
-        prefixMap[0] = -1;  // Initial condition for no subarray
+        prefixMap[0] = -1; 
 
         for (int i = 0; i < nums.size(); i++) {
             prefixSum += nums[i];
