@@ -42,7 +42,7 @@ class Solution {
 
         long result = ((total * total) % MOD - sumPoints + MOD) % MOD;
         result = result * modInv(2, MOD) % MOD;
-        // System.out.println(modInv(2, MOD));
+        // System.out.println(modInv(2, MOD)); 
         return (int)result;
     }
 }
