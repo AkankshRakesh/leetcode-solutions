@@ -1,29 +1,23 @@
 class Solution {
-    public List<List<Integer>> generate(int nr) {
-        List<List<Integer>> arr = new ArrayList<>();
-        ArrayList<Integer> temp = new ArrayList<>();
-        temp.add(1);
-        arr.add(new ArrayList<>(temp));
-
-        if(nr == 1) return arr;
-        temp.add(1);
-        arr.add(new ArrayList<>(temp));
-
-        if(nr == 2) return arr;
-        for(int i = 2; i < nr; i++){
-            ArrayList<Integer> level = new ArrayList<>();
-            level.add(1);
-            int left = 0, right = 1;
-            int size = arr.get(i - 1).size();
-            while(right < size){
-                level.add(arr.get(i - 1).get(left) + arr.get(i - 1).get(right));
-                left++;
-                right++;
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> ans = new ArrayList<>();
+        for(int i = 0; i < numRows; i++){
+            List<Integer> temp = new ArrayList<>();
+            temp.add(1);
+            if(i == 0){
+                ans.add(temp);
+                continue;
             }
-            level.add(1);
-            arr.add(level);
+            if(i == 1){
+                temp.add(1);
+                ans.add(temp);
+                continue;
+            }
+            
+            for(int j = 1; j < i; j++) temp.add(ans.get(i - 1).get(j) + ans.get(i - 1).get(j - 1));
+            temp.add(1);
+            ans.add(temp);
         }
-
-        return arr;
+        return ans;
     }
 }
