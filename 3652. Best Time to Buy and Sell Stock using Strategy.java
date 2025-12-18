@@ -26,4 +26,4 @@ class Solution {
 
         return original + maxGain;
     }
-}
+}   
