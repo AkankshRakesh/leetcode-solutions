@@ -1,41 +1,18 @@
 class Solution {
-    public int evenExpansion(String s, int ind, int n){
-        int left = ind;
-        int right = ind + 1;
-        int ans = 0;
+    public boolean isPalindrome(String s){
+        if(s.length() == 0) return false;
+        for(int i = 0; i < s.length() / 2; i++) if(s.charAt(i) != s.charAt(s.length() - 1 - i)) return false;
 
-        while(left >= 0 && right < n){
-            if(s.charAt(left) != s.charAt(right)) break;
-            ans++;
-            left--;
-            right++;
-        }
-        return ans;
-    }
-
-    public int oddExpansion(String s, int ind, int n){
-        int left = ind - 1;
-        int right = ind + 1;
-        int ans = 0;
-        
-        while(left >= 0 && right < n){
-            if(s.charAt(left) != s.charAt(right)) break;
-            ans++;
-            left--;
-            right++;
-        }
-        return ans;
+        return true;
     }
     public int countSubstrings(String s) {
-        int n = s.length();
-
-        int ans = n;
-        for(int i = 0; i < n; i++){
-            if(i != n - 1){
-                ans += evenExpansion(s, i, n);
-                if(i != 0) ans += oddExpansion(s, i, n);
+        int count = 0;
+        for(int i = 0; i < s.length(); i++){
+            for(int j = 0; j < s.length() - i; j++){
+                if(isPalindrome(s.substring(j, i + j + 1))) count++;
             }
         }
-        return ans;
+
+        return count;
     }
 }
