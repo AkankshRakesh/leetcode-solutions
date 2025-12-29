@@ -28,7 +28,7 @@ class Solution {
         HashMap<String, ArrayList<Character>> allowedHm = new HashMap<>();
         HashMap<String, Boolean> memo = new HashMap<>();
         for(String str : allowed){
-            String base = str.charAt(0) + "" + str.charAt(1);
+            String base = str.charAt(0) + "" + str.charAt(1);     
             // System.out.println(str.substring(0, 2) + " " + base);
             if(allowedHm.containsKey(base)) allowedHm.get(base).add(str.charAt(2));
             else{
