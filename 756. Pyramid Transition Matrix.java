@@ -39,4 +39,4 @@ class Solution {
         }
         return backtrack(bottom, 0, allowedHm, new StringBuilder(), memo);
     }
-}
+}   
