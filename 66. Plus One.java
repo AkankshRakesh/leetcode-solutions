@@ -1,25 +1,21 @@
 class Solution {
-    boolean flag = false;
-    public void carrySum(int[] digits, int ind){
-        if(ind < 0){
-            flag = true;
-            return;
-        }
-        if(digits[ind] == 9){
-            digits[ind] = 0;
-            carrySum(digits, ind - 1);
-        }
-        else digits[ind]++;
-    }
     public int[] plusOne(int[] digits) {
-        carrySum(digits, digits.length - 1);
-
-        if(flag){
-            int[] ans = new int[digits.length + 1];
-            ans[0] = 1;
-            return ans;
+        int[] num = new int[digits.length + 1];
+        int carry = 1;
+        for(int i = digits.length - 1; i >= 0; i--){
+            int currDigit = digits[i] + carry;
+            if(currDigit == 10) num[i + 1] = 0;
+            else{
+                num[i + 1] = currDigit;
+                carry = 0;
+            }
         }
-
-        return digits;
+        if(carry == 0){
+            int[] ansArr = new int[digits.length];
+            for(int i = 1; i <= digits.length; i++) ansArr[i - 1] = num[i];
+            return ansArr;
+        }
+        num[0] = carry;
+        return num;
     }
 }
