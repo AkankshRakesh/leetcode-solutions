@@ -1,44 +1,50 @@
 class Solution {
-    static class Edge {
-        int to, w;
-        Edge(int t, int w) { this.to = t; this.w = w; }
-    }
-
-    public int minCost(int n, int[][] edges) {
-        List<Edge>[] adj = new ArrayList[n];
-        for (int i = 0; i < n; i++) adj[i] = new ArrayList<>();
-        for (int[] e : edges) {
-            int u = e[0], v = e[1], w = e[2];
-            adj[u].add(new Edge(v, w));     // normie 
-            adj[v].add(new Edge(u, 2*w));   
+    public class Pair{
+        int v;
+        int cost;
+        public Pair(int v, int cost){
+            this.v = v;
+            this.cost = cost;
         }
-
-        long[][] dist = new long[n][2];
-        for (int i = 0; i < n; i++) Arrays.fill(dist[i], Long.MAX_VALUE);
-        dist[0][0] = 0;
-
-        PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(a -> a[0]));
-        pq.offer(new long[]{0, 0, 0}); // {cost, node, switchUsed}
-
-        while (!pq.isEmpty()) {
-            long[] cur = pq.poll();
-            long d = cur[0];
-            int u = (int) cur[1], s = (int) cur[2];
-
-            if (d > dist[u][s]) continue;
-
-            for (Edge e : adj[u]) {
-                int v = e.to;
-                long w = e.w;
-                int ns = (w % 2 == 0) ? 1 : s; // if reversed edge, switch used
-                if (dist[v][ns] > d + w) {
-                    dist[v][ns] = d + w;
-                    pq.offer(new long[]{dist[v][ns], v, ns});
-                }
+    }
+    public int minCost(int n, int[][] edges) {
+        HashMap<Integer, ArrayList<Pair>> adj = new HashMap<>();
+        for(int[] edge : edges){
+            if(adj.containsKey(edge[0])) adj.get(edge[0]).add(new Pair(edge[1], edge[2]));
+            else{
+                ArrayList<Pair> temp = new ArrayList<>();
+                temp.add(new Pair(edge[1], edge[2]));
+                adj.put(edge[0], temp);
+            }
+            
+            if(adj.containsKey(edge[1])) adj.get(edge[1]).add(new Pair(edge[0], edge[2] * 2));
+            else{
+                ArrayList<Pair> temp = new ArrayList<>();
+                temp.add(new Pair(edge[0], edge[2] * 2));
+                adj.put(edge[1], temp);
             }
         }
 
-        long ans = Math.min(dist[n-1][0], dist[n-1][1]);
-        return ans == Long.MAX_VALUE ? -1 : (int) ans;
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.cost, b.cost));
+        pq.offer(new Pair(0, 0));
+        int currCost = 0;
+        boolean[] visited = new boolean[n];
+
+        while(!pq.isEmpty()){
+            int vertex = pq.peek().v;
+            int cost = pq.poll().cost;
+            if(visited[vertex]) continue;
+            currCost = cost;
+            // System.out.println(vertex + "-" + currCost);
+            visited[vertex] = true;
+            if(vertex == n - 1) break;
+
+            if(!adj.containsKey(vertex)) continue;
+            for(Pair neig : adj.get(vertex)){
+                if(!visited[neig.v]) pq.offer(new Pair(neig.v, neig.cost + currCost));
+            } 
+        }
+
+        return currCost == 0 || !visited[n - 1] ? -1 : currCost;
     }
 }
