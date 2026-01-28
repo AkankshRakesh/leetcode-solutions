@@ -18,3 +18,19 @@ class Solution {
         return true;
     }
 }
+class Solution {
+    public void dfs(List<List<Integer>> rooms, boolean[] visited, int index){
+        visited[index] = true;
+
+        for(int room : rooms.get(index)){
+            if(!visited[room]) dfs(rooms, visited, room);        
+        }
+    }
+    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
+        boolean visited[] = new boolean[rooms.size()];
+        dfs(rooms, visited, 0);
+
+        for(boolean val : visited) if(!val) return false;
+        return true;
+    }
+}
