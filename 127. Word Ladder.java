@@ -1,45 +1,30 @@
 class Solution {
-    class Pair{
-        Integer level;
-        String node;
-        public Pair(String node, Integer level){
-            this.level = level;
-            this.node = node;
-        }
-    }
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         HashMap<String, Integer> hm = new HashMap<>();
-        for(int i = 0; i < wordList.size(); i++) hm.put(wordList.get(i), 0);
-
-        Queue<Pair> q = new LinkedList<>();
-        if(!hm.containsKey(endWord)) return 0;
-        q.offer(new Pair(beginWord, 1));
+        for(String word : wordList) hm.put(word, -1);
+        Queue<String> q = new LinkedList<>();
+        q.offer(beginWord);
+        hm.put(beginWord, 1);
 
         while(!q.isEmpty()){
-            Pair top = q.poll();
-            // System.out.println(top.node);
-            hm.put(top.node, top.level);
-            
-            String node = top.node;
-            if(node.equals(endWord)) break;
-            StringBuilder sb = new StringBuilder(node);
-
-
-            for(int i = 0; i < node.length(); i++){
+            String word = q.poll();
+            for(int i = 0; i < word.length(); i++){
+                StringBuilder sb = new StringBuilder(i == 0 ? "" : word.substring(0, i));
                 for(int j = 0; j < 26; j++){
-                    sb.setCharAt(i, (char)('a' + j));
-                    if(hm.containsKey(sb.toString())){
-                        if(hm.get(sb.toString()) == 0){
-                            q.offer(new Pair(sb.toString(), top.level + 1));
-                        }
+                    StringBuilder temp = new StringBuilder(sb);
+                    char ch = (char)(j + 'a');
+                    temp.append(ch);
+                    temp.append(word.substring(i + 1, word.length()));
+                    if(hm.containsKey(temp.toString()) && hm.get(temp.toString()) == -1){
+                        hm.put(temp.toString(), hm.get(word) + 1);
+                        q.offer(temp.toString());
+                        // System.out.println(word + "-" + hm.get(word));
                     }
-                    sb.setCharAt(i, node.charAt(i));
                 }
-
-            }  
+            }
         }
 
-
+        if(!hm.containsKey(endWord) || hm.get(endWord) == -1) return 0;
         return hm.get(endWord);
     }
 }
