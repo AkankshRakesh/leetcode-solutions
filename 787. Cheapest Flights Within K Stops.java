@@ -1,55 +1,38 @@
 class Solution {
-    class Node{
-        int jump;
-        int cost;
-        int node;
-        public Node(int node, int cost, int jump){
-            this.node = node;
-            this.cost = cost;
-            this.jump = jump;
-        }
-    }
-    class Pair{
-        int node;
-        int cost;
-        public Pair(int node, int cost){
-            this.node = node;
-            this.cost = cost;
-        }
-    }
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        HashMap<Integer, ArrayList<Pair>> adj = new HashMap<>();
-
+        HashMap<Integer, ArrayList<int[]>> adj = new HashMap<>();
         for(int[] flight : flights){
-            if(!adj.containsKey(flight[0])){
-                ArrayList<Pair> arr = new ArrayList<>();
-                arr.add(new Pair(flight[1], flight[2]));
-                adj.put(flight[0], arr);
-            }
-            else adj.get(flight[0]).add(new Pair(flight[1], flight[2]));
+            ArrayList<int[]> temp = adj.getOrDefault(flight[0], new ArrayList<>());
+            temp.add(new int[]{flight[1], flight[2]});
+            adj.put(flight[0], temp);
         }
 
-        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.cost, b.cost));
-        pq.offer(new Node(src, 0, 0));
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
+        k++;
+        boolean[] visited = new boolean[n];
+        int[][] dp = new int[n][k + 2];
+        for(int i = 0; i < n; i++) Arrays.fill(dp[i], Integer.MAX_VALUE);
 
-        int[][] best = new int[n][k + 2];
-        for (int[] row : best) Arrays.fill(row, Integer.MAX_VALUE);
-        best[src][0] = 0;
-
+        pq.offer(new int[]{src, 0, 0});
+        dp[src][0] = 0;
         while(!pq.isEmpty()){
-            Node top = pq.poll();
+            int[] node = pq.poll();
+            int vertex = node[0];
+            int cost = node[1];
+            int stops = node[2];
+            if (cost > dp[vertex][stops]) continue;
+            if(stops > k) continue;
+            if(vertex == dst) return cost;
 
-            if(top.node == dst) return top.cost;
-            if(top.jump > k || !adj.containsKey(top.node)) continue;
-            if (top.cost > best[top.node][top.jump]) continue;
-
-            for(Pair neig : adj.get(top.node)){
-                int newCost = top.cost + neig.cost;
-                int nextJump = top.jump + 1;
-
-                if (newCost < best[neig.node][nextJump]) {
-                    best[neig.node][nextJump] = newCost;
-                    pq.offer(new Node(neig.node, newCost, nextJump));
+            
+            if(!adj.containsKey(vertex)) continue;
+            for(int[] neig : adj.get(vertex)){
+                int nextCost = neig[1] + cost;
+                int nextStop = stops + 1;
+                
+                if(nextCost < dp[neig[0]][nextStop]){
+                    dp[neig[0]][nextStop] = nextCost;
+                    pq.offer(new int[]{neig[0], neig[1] + cost, stops + 1});
                 }
             }
         }
