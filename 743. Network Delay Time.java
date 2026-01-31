@@ -1,52 +1,36 @@
 class Solution {
-    class Pair {
-        int x, y;
-
-        public Pair(int x, int y) {
-            this.x = x;
-            this.y = y;
+    public int networkDelayTime(int[][] times, int n, int k) {
+        HashMap<Integer, ArrayList<int[]>> adj = new HashMap<>();
+        boolean[] visited = new boolean[n + 1];
+        
+        for(int[] time : times){
+            ArrayList<int[]> temp = adj.getOrDefault(time[0], new ArrayList<>());
+            temp.add(new int[]{time[1], time[2]});
+            adj.put(time[0], temp);
         }
-    }
 
-    public void dfs(HashMap<Integer, ArrayList<Pair>> hm, int n, int ele, int eleCost, int[] minCosts, int currCost) {
-        currCost += eleCost;
-        minCosts[ele] = Math.min(minCosts[ele], currCost);
+        PriorityQueue<int[]> q = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
+        q.offer(new int[]{k, 0});
 
-        ArrayList<Pair> neighbors = hm.get(ele);
-        if (neighbors != null) {
-            for (Pair pair : neighbors) {
-                if (currCost + pair.y < minCosts[pair.x]) {
-                    dfs(hm, n, pair.x, pair.y, minCosts, currCost);
-                }
+        int ans = 0;
+        while(!q.isEmpty()){
+            int[] node = q.poll();
+            int vertex = node[0];
+            int cost = node[1];
+            
+            if(visited[vertex]) continue;
+            visited[vertex] = true;
+            ans = Math.max(ans, cost);
+            // System.out.println(vertex + "-" + cost);
+            if(!adj.containsKey(vertex)) continue;
+
+            for(int[] neig : adj.get(vertex)){
+                if(!visited[neig[0]]) q.offer(new int[]{neig[0], cost + neig[1]});
             }
         }
 
-        currCost -= eleCost;
-    }
+        for(int i = 1; i <= n; i++) if(!visited[i]) return -1;
 
-    public int networkDelayTime(int[][] times, int n, int k) {
-        int[] minCosts = new int[n + 1];
-        Arrays.fill(minCosts, Integer.MAX_VALUE);
-        HashMap<Integer, ArrayList<Pair>> hm = new HashMap<>();
-
-        for (int i = 0; i < times.length; i++) {
-            int u = times[i][0];
-            int v = times[i][1];
-            int cost = times[i][2];
-
-            if (!hm.containsKey(u)) {
-                ArrayList<Pair> temp = new ArrayList<>();
-                temp.add(new Pair(v, cost));
-                hm.put(u, temp);
-            } else
-                hm.get(u).add(new Pair(v, cost));
-        }
-
-        dfs(hm, n, k, 0, minCosts, 0);
-
-        int maxNum = Integer.MIN_VALUE;
-        for(int i = 1; i <= n; i++) maxNum = maxNum > minCosts[i] ? maxNum : minCosts[i];
-        if(maxNum == Integer.MAX_VALUE) return -1;
-        return maxNum;
+        return ans;
     }
 }
