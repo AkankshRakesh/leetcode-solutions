@@ -1,43 +1,57 @@
 class Solution {
-    public void dfs(int[][] grid, int[][] minTime,int currTime, int i, int j, int n, int m){
-        if(i >= n || j >= m || i < 0 || j < 0) return;
-        if(grid[i][j] == 0 || grid[i][j] == 2) return;
-        if(minTime[i][j] <= currTime) return;
-        minTime[i][j] = Math.min(minTime[i][j], currTime);
-
-        dfs(grid, minTime, currTime + 1, i + 1, j, n, m);
-        dfs(grid, minTime, currTime + 1, i - 1, j, n, m);
-        dfs(grid, minTime, currTime + 1, i, j + 1, n, m);
-        dfs(grid, minTime, currTime + 1, i, j - 1, n, m);
-    }
     public int orangesRotting(int[][] grid) {
-        int n = grid.length;
-        int m = grid[0].length;
-        
-        int[][] minTime = new int[n][m];
+        int n = grid.length, m = grid[0].length;
+        int[][] dp = new int[n][m];
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
-                if(grid[i][j] == 1) minTime[i][j] = Integer.MAX_VALUE;
+                if(grid[i][j] == 1) dp[i][j] = Integer.MAX_VALUE;
             }
         }
+        
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 if(grid[i][j] == 2){
-                    dfs(grid, minTime, 1, i + 1, j, n, m);
-                    dfs(grid, minTime, 1, i - 1, j, n, m);
-                    dfs(grid, minTime, 1, i, j + 1, n, m);
-                    dfs(grid, minTime, 1, i, j - 1, n, m);
+                    Queue<int[]> q = new LinkedList<>();
+                    q.offer(new int[]{i, j});
+                    int time = 0;
+                    while(!q.isEmpty()){
+                        int size = q.size();
+                        time++;
+
+                        while(size != 0){
+                            int x = q.peek()[0];
+                            int y = q.poll()[1];
+                            if(x + 1 < n && grid[x + 1][y] != 0 && dp[x + 1][y] > time){
+                                dp[x + 1][y] = time;
+                                q.offer(new int[]{x + 1, y});
+                            }
+                            if(x - 1 >= 0 && grid[x - 1][y] != 0 && dp[x - 1][y] > time){
+                                dp[x - 1][y] = time;
+                                q.offer(new int[]{x - 1, y});
+                            }
+                            if(y + 1 < m && grid[x][y + 1] != 0 && dp[x][y + 1] > time){
+                                dp[x][y + 1] = time;
+                                q.offer(new int[]{x, y + 1});
+                            }
+                            if(y - 1 >= 0 && grid[x][y - 1] != 0 && dp[x][y - 1] > time){
+                                dp[x][y - 1] = time;
+                                q.offer(new int[]{x, y - 1});
+                            }
+
+                            size--;
+                        }
+                    }
                 }
             }
         }
 
-        int maxTime = 0;
+        int ans = 0;
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
-                if(grid[i][j] == 1) maxTime = Math.max(maxTime, minTime[i][j]);
+                if(grid[i][j] != 0) ans = Math.max(ans, dp[i][j]);
             }
         }
-        if(maxTime == Integer.MAX_VALUE) return -1;
-        return maxTime;
+
+        return ans == Integer.MAX_VALUE ? -1 : ans;
     }
 }
