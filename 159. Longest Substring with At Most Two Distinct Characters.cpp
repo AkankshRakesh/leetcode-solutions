@@ -1,7 +1,3 @@
-#include <string>
-#include <algorithm>
-#include <vector>
-
 class Solution {
 public:
     int lengthOfLongestSubstringKDistinct(const std::string& s, int k) {
