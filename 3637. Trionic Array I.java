@@ -3,14 +3,12 @@ class Solution {
         for(int i = s; i < e; i++){
             if(nums[i] >= nums[i + 1]) return false;
         }
-
         return true;
     }
     public boolean isDec(int[] nums, int s, int e){
         for(int i = s; i < e; i++){
             if(nums[i] <= nums[i + 1]) return false;
         }
-
         return true;
     }
     public boolean isTrionic(int[] nums) {
@@ -20,7 +18,6 @@ class Solution {
                 if(isInc(nums, 0, p) && isDec(nums, p, q) && isInc(nums, q, n - 1)) return true;
             }
         }
-
         return false;
     }
 }
