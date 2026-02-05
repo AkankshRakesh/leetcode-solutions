@@ -1,25 +1,22 @@
 class Solution {
     public int totalFruit(int[] fruits) {
-        HashMap<Integer, Integer> hm = new HashMap<>();
+        int ans = 0;
+        int count = 0;
+        int[] freq = new int[fruits.length];
         int left = 0;
-        int n = fruits.length;
-        if(n == 1) return 1;
-        hm.put(fruits[0], 1);
-        
-        int maxSize = 1;
-        for(int right = 1; right < n; right++){
-            hm.put(fruits[right], hm.getOrDefault(fruits[right], 0) + 1);
+        for(int right = 0; right < fruits.length; right++){
+            freq[fruits[right]]++;
+            if(freq[fruits[right]] == 1) count++;
 
-            while(hm.size() > 2){
-                int count = hm.get(fruits[left]);
-                if(count == 1) hm.remove(fruits[left]);
-                else hm.put(fruits[left], count - 1);
+            while(count > 2){
+                freq[fruits[left]]--;
+                if(freq[fruits[left]] == 0) count--;
                 left++;
-            }
+            } 
 
-            maxSize = maxSize > right - left + 1 ? maxSize : right - left + 1;
+            ans = Math.max(ans, right - left + 1);
         }
 
-        return maxSize;
+        return ans;
     }
 }
