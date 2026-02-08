@@ -1,24 +1,18 @@
 class Solution {
 public:
-    int numberOfSubstrings(string s, int k) {
-        int totalSubstrings = 0;
-    int n = s.length();
-    
-    for (int i = 0; i < n; ++i) {
-        vector<int> freq(26, 0); 
-        
-        for (int j = i; j < n; ++j) {
-            freq[s[j] - 'a']++; 
-            
-            for (int f = 0; f < 26; ++f) {
-                if (freq[f] >= k) {
-                    totalSubstrings++; 
-                    break; 
-                }
+    int numberOfSubstrings(const std::string& s, int k) {
+        int ans = 0;
+
+        for (int left = 0; left < (int)s.length(); left++) {
+            vector<int> freq(128, 0);
+            int right = left;
+            for (right = left; right < (int)s.length(); right++) {
+                freq[s[right]]++;
+                if (freq[s[right]] == k) break;
             }
+            ans += (int)s.length() - right;
         }
-    }
-    
-    return totalSubstrings;
+
+        return ans;
     }
 };
