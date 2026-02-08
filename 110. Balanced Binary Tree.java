@@ -14,20 +14,20 @@
  * }
  */
 class Solution {
-    boolean ans = true;
-    public int trav(TreeNode node){
+    boolean res = true;
+    public int dfs(TreeNode node){
         if(node == null) return 0;
+        
+        int leftTree = dfs(node.left);
+        int rightTree = dfs(node.right);
 
-        int left = trav(node.left);
-        int right = trav(node.right);
-
-        if(Math.abs(left - right) > 1){
-            ans = false;
-        }
-        return 1 + Math.max(left, right);
+        if(Math.abs(leftTree - rightTree) > 1) res = false;
+        
+        return 1 + Math.max(leftTree, rightTree);
     }
     public boolean isBalanced(TreeNode root) {
-        trav(root);
-        return ans;
+        dfs(root);
+
+        return res;
     }
 }
