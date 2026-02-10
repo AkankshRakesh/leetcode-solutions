@@ -1,54 +1,44 @@
 class Solution {
     public int numBusesToDestination(int[][] routes, int source, int target) {
-        if(source == target) return 0;
         HashMap<Integer, ArrayList<Integer>> adj = new HashMap<>();
-        
         for(int i = 0; i < routes.length; i++){
-            for(int stop : routes[i]){
-                if(!adj.containsKey(stop)){
-                    ArrayList<Integer> temp = new ArrayList<>();
-                    temp.add(i);
-                    adj.put(stop, temp);
-                }
-                else adj.get(stop).add(i);
+            int[] route = routes[i];
+            for(int stop : route){
+                ArrayList<Integer> temp = adj.getOrDefault(stop, new ArrayList<>());
+                temp.add(i);
+                adj.put(stop, temp);
             }
         }
-        // for(Map.Entry<Integer, ArrayList<Integer>> ele : adj.entrySet()){
-        //     System.out.print(ele.getKey() + " : ");
-        //     for(int stop : ele.getValue()) System.out.print(stop + " ");
-        //     System.out.println();
-        // }
 
-        if(!adj.containsKey(source)) return -1;
-        HashSet<Integer> visited = new HashSet<>();
+        if(source == target) return 0;
+        if(!adj.containsKey(source) || !adj.containsKey(target)) return -1;
+
+        int count = 0;
         Queue<Integer> q = new LinkedList<>();
-        q.offer(source);
+        boolean[] visited = new boolean[routes.length];
         for(int route : adj.get(source)){
-            for(int i = 0; i < routes[route].length; i++){
-                if(routes[route][i] != source) q.offer(routes[route][i]);
-
+            visited[route] = true;
+            for(int stops : routes[route]){
+                q.offer(stops);
             }
-            visited.add(route);
         }
 
-        int ans = 1;
         while(!q.isEmpty()){
             int size = q.size();
-            while(size != 0){
-                int station = q.poll();
-                if(station == target) return ans;
+            for(int i = 0; i < size; i++){
+                int stop = q.poll();
+                if(stop == target) return count + 1;
 
-                for(int route : adj.get(station)){
-                    if(visited.contains(route)) continue;
-                    for(int i = 0; i < routes[route].length; i++){
-                        if(routes[route][i] != station) q.offer(routes[route][i]);
+                for(int route : adj.get(stop)){
+                    if(visited[route]) continue;
+                    for(int j = 0; j < routes[route].length; j++){
+                        int nextStop = routes[route][j];
+                        q.offer(nextStop);
                     }
-                    visited.add(route);
+                    visited[route] = true;
                 }
-
-                size--;
             }
-            ans++;
+            count++;
         }
 
         return -1;
