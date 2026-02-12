@@ -1,39 +1,52 @@
 class Solution {
-    public boolean backtrack(long a, long b, long c, long d, int[] matchsticks, int index, long target, HashMap<String, Boolean> hm){
-        if(index >= matchsticks.length){
-            if(a == b && b == c && c == d) return true;
+    public boolean dfs(int[] matches,int index, long[] buckets, long sum){
+        if(index >= matches.length){
+            if(buckets[0] == buckets[1] && buckets[1] == buckets[2] && buckets[2] == buckets[3] && buckets[0] == sum) return true;
             return false;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(Long.toString(a)).append("-").append(Long.toString(b)).append("-").append(Long.toString(c)).append("-").append(Long.toString(d)).append("-").append(Integer.toString(index));
-        if(hm.containsKey(sb.toString())) return hm.get(sb.toString());
 
-        // System.out.println(sb.toString());
-        int curr = matchsticks[index];
-        boolean res = false;
-        for(int i = 0; i < 4; i++){
-            if(i == 0 && curr + a <= target){ res |= backtrack(a + curr, b, c, d, matchsticks, index + 1, target, hm);}
-            else if(i == 1 && curr + b <= target){ res |= backtrack(a, b + curr, c, d, matchsticks, index + 1, target, hm);}
-            else if(i == 2 && curr + c <= target) {res |= backtrack(a, b, c + curr, d, matchsticks, index + 1, target, hm);}
-            else if(i == 3 && curr + d <= target) { res |= backtrack(a, b, c, d + curr, matchsticks, index + 1, target, hm);}
+        if(buckets[0] + matches[index] <= sum){
+            buckets[0] += matches[index];
+            boolean l0 = dfs(matches, index + 1, buckets, sum);
+            buckets[0] -= matches[index];
+            if(l0) return true;
         }
 
-        hm.put(sb.toString(), res);
-        return res;
+        if(buckets[1] + matches[index] <= sum){
+            buckets[1] += matches[index];
+            boolean l1 = dfs(matches, index + 1, buckets, sum);
+            buckets[1] -= matches[index];
+            if(l1) return true;
+        }
+
+        if(buckets[2] + matches[index] <= sum){
+            buckets[2] += matches[index];
+            boolean l3 = dfs(matches, index + 1, buckets, sum);
+            buckets[2] -= matches[index];
+            if(l3) return true;
+        }
+
+        if(buckets[3] + matches[index] <= sum){
+            buckets[3] += matches[index];
+            boolean l4 = dfs(matches, index + 1, buckets, sum);
+            buckets[3] -= matches[index];
+            if(l4) return true;
+        }
+
+        return false;
     }
-    public boolean makesquare(int[] ms) {
-        Arrays.sort(ms);
-        for(int i = 0; i < ms.length / 2; i++){
-            int temp = ms[ms.length - i - 1];
-            ms[ms.length - i - 1] = ms[i];
-            ms[i] = temp;
-            // System.out.println(ms[i] + "-" + ms[ms.length - i - 1]);
+    public boolean makesquare(int[] matchsticks) {
+        Arrays.sort(matchsticks);
+        for(int i = 0; i < matchsticks.length / 2; i++){
+            int temp = matchsticks[i];
+            matchsticks[i] = matchsticks[matchsticks.length - i - 1];
+            matchsticks[matchsticks.length - i - 1] = temp;
         }
-        long target = 0;
-        for(int stick : ms) target += stick;
-        
-        if(target % 4 != 0) return false;
-        HashMap<String, Boolean> hm = new HashMap<>();
-        return backtrack(0, 0, 0, 0, ms, 0, target / 4, hm);
+        long sum = 0;
+        for(int matches : matchsticks) sum += matches;
+        if(sum % 4 != 0) return false;
+        sum /= 4;
+
+        return dfs(matchsticks, 0, new long[]{0, 0, 0, 0}, sum);
     }
 }
