@@ -9,7 +9,7 @@ public:
             minProd *= num;
             maxProd *= num;
             res = max(res, (int)max(minProd, maxProd));
-            if (num == 0) {
+            if (num == 0) { 
                 minProd = 1;
                 maxProd = 1;
             } else if (maxProd < 0) {
