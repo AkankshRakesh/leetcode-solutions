@@ -1,52 +1,57 @@
 class Solution {
-    class Pair{
-        int point;
-        int dist;
-        public Pair(int point, int dist){
-            this.point = point;
-            this.dist = dist;
+    class DSU{
+        int[] parent;
+        int[] rank;
+        public DSU(int n){
+            parent = new int[n];
+            rank = new int[n];
+            for(int i = 0; i < n; i++){
+                parent[i] = i;
+                rank[i] = 1;
+            }
+        }
+
+        public int find(int node){
+            if(parent[node] != node) return find(parent[node]);
+            return node;
+        }
+
+        public void union(int n1, int n2){
+            int p1 = find(n1);
+            int p2 = find(n2);
+            if(p1 == p2) return;
+
+            if(rank[p1] > rank[p2]) parent[p2] = p1;
+            else if(rank[p1] < rank[p2]) parent[p1] = p2;
+            else{
+                parent[p2] = p1;
+                p1++;
+            }
         }
     }
+
     public int minCostConnectPoints(int[][] points) {
-        
-        int n = points.length;
-        HashMap<Integer, ArrayList<Integer>> adj = new HashMap<>();
-        boolean[] visited = new boolean[n];
-        for(int i = 0; i < n; i++){
-            int x1 = points[i][0];
-            int y1 = points[i][1];
-            ArrayList<Integer> temp = new ArrayList<>();
-            for(int j = 0; j < n; j++){
-                if(i == j) continue;
-                int x2 = points[j][0];
-                int y2 = points[j][1];
-                temp.add(j);
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
+        for(int i = 0; i < points.length; i++){
+            for(int j = i + 1; j < points.length; j++){
+                int dist = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+                pq.offer(new int[]{i, j, dist});
             }
-            adj.put(i, temp);
         }
 
-
-        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.dist, b.dist));
-        int nodesConnected = 0;
-        int ans = 0;
-        pq.offer(new Pair(0, 0));
+        int cost = 0;
+        DSU dsu = new DSU(points.length);
         while(!pq.isEmpty()){
-            Pair p = pq.poll();
-            if(visited[p.point]) continue;
-            
-            ans += p.dist;
-            visited[p.point] = true;
-            for(int neig : adj.get(p.point)){
-                if(!visited[neig]){
-                    int x1 = points[p.point][0];
-                    int y1 = points[p.point][1];
-                    int x2 = points[neig][0];
-                    int y2 = points[neig][1];
-                    pq.offer(new Pair(neig, Math.abs(x1 - x2) + Math.abs(y1 - y2)));
-                }
+            int[] edge = pq.poll();
+            int u = edge[0];
+            int v = edge[1];
+            int edgeCost = edge[2];
+            if(dsu.find(u) != dsu.find(v)){
+                dsu.union(u, v);
+                cost += edgeCost;
             }
         }
 
-        return ans;
+        return cost;
     }
 }
