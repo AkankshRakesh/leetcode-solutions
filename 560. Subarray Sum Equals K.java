@@ -1,24 +1,23 @@
 class Solution {
-    public int subarraySumLessThanEqualToK(int[] nums, int k){
+public:
+    int subarraySumLessThanEqualToK(const vector<int>& nums, int k) {
         int left = 0;
-        HashMap<Integer, Integer> freq = new HashMap<>();
+        unordered_map<int, int> freq;
         int ans = 0;
         int sum = 0;
-        freq.put(0, 1);
-        
-        for(int right = 0; right < nums.length; right++){
-            sum += nums[right];
-            if(freq.containsKey(sum - k)){
-                ans += freq.get(sum - k);
-            }
-            
-            freq.put(sum, freq.getOrDefault(sum, 0) + 1);
-        }
-        // System.out.println(ans);
+        freq[0] = 1;
 
+        for (int right = 0; right < (int)nums.size(); right++) {
+            sum += nums[right];
+            if (freq.find(sum - k) != freq.end()) {
+                ans += freq[sum - k];
+            }
+            freq[sum]++;
+        }
         return ans;
     }
-    public int subarraySum(int[] nums, int k) {
+
+    int subarraySum(const vector<int>& nums, int k) {
         return subarraySumLessThanEqualToK(nums, k);
     }
-}
+};
