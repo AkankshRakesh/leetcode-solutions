@@ -1,12 +1,16 @@
 class Solution {
     public int reverseBits(int n) {
-        long ans = 0;
-        for(int i = 0; i < 32; i++){
-            ans = (ans << 1) | (n & 1);
-            // System.out.println((n >>> 1) & 1);
-            n >>= 1;
+        int ans = 0;
+        int count = 31;
+        while(count != 0){
+            int bit = n & 1;
+            // System.out.print(bit);
+            ans = ans | bit;
+            ans = ans << 1;
+            n = n >> 1;
+            count--;
         }
 
-        return (int)ans;
+        return ans;
     }
 }
