@@ -15,7 +15,7 @@ public:
         for (int i = 1; i < (int)temp.size(); i++) {
             while (!st.empty() && temp[i] > st.top().t) {
                 ans[st.top().ind] = i - st.top().ind;
-                st.pop();
+                st.pop(); 
             }
             st.push(Pair(temp[i], i));
         }
