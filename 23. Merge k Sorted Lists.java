@@ -11,26 +11,23 @@
 class Solution {
     public ListNode mergeKLists(ListNode[] lists) {
         ListNode ans = new ListNode();
-        int k = lists.length;
-        ListNode headAns = ans;
-
-        while(true){
-            int leastInd = -1;
-            for(int i = 0; i < k; i++){
-                ListNode head = lists[i];
-                if(head == null) continue;
-
-                if(leastInd == -1 || lists[leastInd].val > lists[i].val) leastInd = i;
-            }    
-            if(leastInd == -1) break;
-            if(ans == null) ans = new ListNode(lists[leastInd].val);
-            else{
-                ans.next = new ListNode(lists[leastInd].val);
-                ans = ans.next;
+        ListNode ansHead = ans;
+        PriorityQueue<ListNode> pq = new PriorityQueue<>((a, b) -> Integer.compare(a.val, b.val));
+        for(ListNode head : lists){
+            while(head != null){
+                pq.offer(new ListNode(head.val));
+                head = head.next;
             }
-            lists[leastInd] = lists[leastInd].next;
         }
 
-        return headAns.next;
+        while(!pq.isEmpty()){
+            if(ans == null) ans = pq.poll();
+            else{
+                ans.next = pq.poll();
+                ans = ans.next;
+            }
+        }
+
+        return ansHead.next;
     }
-} 
+}
