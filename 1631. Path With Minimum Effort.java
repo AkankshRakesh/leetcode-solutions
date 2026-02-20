@@ -27,7 +27,7 @@ class Solution {
                 ans = mid;
                 right = mid;
             }
-            else left = mid + 1;
+            else left = mid + 1;  
         }
 
         return ans;
