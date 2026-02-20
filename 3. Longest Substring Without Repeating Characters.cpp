@@ -1,19 +1,18 @@
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {
-        int n = s.length();
-        if (n == 0) return 0;
+    int lengthOfLongestSubstring(const string& s) {
+        vector<int> freq(128, 0);
+        int left = 0;
+        int ans = 0;
+        for (int right = 0; right < static_cast<int>(s.size()); right++) {
+            freq[s[right]]++;
 
-        unordered_set<char> hs;
-        int left = 0, ans = 0;
-
-        for (int right = 0; right < n; ++right) {
-            while (hs.find(s[right]) != hs.end()) {
-                hs.erase(s[left]);
-                ++left;
+            while (freq[s[right]] >= 2) {
+                freq[s[left]]--;
+                left++;
             }
-            hs.insert(s[right]);
-            ans = max(ans, right - left + 1);  
+
+            ans = max(ans, right - left + 1);
         }
 
         return ans;
