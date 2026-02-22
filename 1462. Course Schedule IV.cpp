@@ -18,7 +18,7 @@ public:
                     }  
                 }
             }
-        }
+        }   
     }
 
     vector<bool> checkIfPrerequisite(int numCourses,
