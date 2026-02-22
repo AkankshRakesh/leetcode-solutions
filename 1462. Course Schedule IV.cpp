@@ -15,7 +15,7 @@ public:
                     if (!isPrerequisite[i][adj]) {
                         isPrerequisite[i][adj] = true;
                         q.push(adj);
-                    }
+                    }  
                 }
             }
         }
