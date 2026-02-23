@@ -15,6 +15,6 @@ public:
         string result;
         for (auto &s : arr) result += s;
 
-        return result;
+        return result;  
     }
 };
