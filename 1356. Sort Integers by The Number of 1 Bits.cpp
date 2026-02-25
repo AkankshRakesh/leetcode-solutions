@@ -16,7 +16,7 @@ public:
         int c2 = count(b);
 
         if(c1 == c2){
-            return a < b;
+            return a < b;  
         }
         return c1 < c2;
     }
