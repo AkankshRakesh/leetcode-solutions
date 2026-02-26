@@ -14,7 +14,7 @@ public:
         while (root->val != target->val) {
             path.push_back(root);
             if (root->val > target->val) {
-                root = root->left;
+                root = root->left;  
             } else {
                 root = root->right;
             }
