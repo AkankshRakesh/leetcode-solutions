@@ -9,32 +9,25 @@
  */
 
 class Solution {
-    public void buildPath(TreeNode root, TreeNode target, ArrayList<TreeNode> arr){
-        while(root.val != target.val){
-            arr.add(root);
-            if(root.val > target.val){
-                root = root.left;
-            }
-            else root = root.right;
-        }
-    }
+    // public TreeNode dfs(TreeNode node, TreeNode p, TreeNode q){
+    //     if(node == null) return null;
+    //     if((node.val > p.val && node.val < q.val) || (node.val < p.val && node.val > q.val) || (node.val == p.val) || (node.val == q.val)) return node;
+
+    //     if(node.val > p.val) return dfs(node.left, p, q);
+    //     return dfs(node.right, p, q);
+    // }
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        ArrayList<TreeNode> arr1 = new ArrayList<>();
-        ArrayList<TreeNode> arr2 = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
 
-        buildPath(root, p, arr1);
-        buildPath(root, q, arr2);
-        arr1.add(p);
-        arr2.add(q);
+        while(!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            if((node.val > p.val && node.val < q.val) || (node.val < p.val && node.val > q.val) || (node.val == p.val) || (node.val == q.val)) return node;
 
-        int n = arr1.size(), m = arr2.size();
-        for(int i = 1; i < n && i < m; i++){
-            if(arr1.get(i).val != arr2.get(i).val) return arr1.get(i - 1);
+            if(node.val > p.val) queue.offer(node.left);
+            else queue.offer(node.right);
         }
 
-        if(n > m){
-            return arr2.get(m - 1);
-        }
-        return arr1.get(n - 1);
+        return root;
     }
 }
