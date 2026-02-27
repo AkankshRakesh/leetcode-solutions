@@ -17,7 +17,7 @@ public:
             while (left >= 0 && right < (int)sb.size() && sb[left] == sb[right]) {
                 if (sb[left] != '#') len += 2;
                 left--;
-                right++;
+                right++;  
             }
 
             if (len > ansLen) {
