@@ -7,4 +7,4 @@ public:
         if(u[0] == v[0] || u[0] == v[1]) return u[0];
         return u[1];
     }
-};
+}; 
