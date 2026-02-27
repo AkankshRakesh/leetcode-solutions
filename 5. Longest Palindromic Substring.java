@@ -28,6 +28,6 @@ class Solution {
             }
         }
 
-        return s.substring(ansLeft, ansRight + 1);
+        return s.substring(ansLeft, ansRight + 1);   
     }
 }
