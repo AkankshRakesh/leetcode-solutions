@@ -1,36 +1,33 @@
 class Solution {
+    public int[] expand(String s, int left, int right){
+        while(left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)){
+            left--;
+            right++;
+        }
+        return new int[]{left + 1, right - 1};
+    }
     public String longestPalindrome(String s) {
-        StringBuilder sb = new StringBuilder("#");
-        for(int i = 0; i < s.length(); i++) sb.append(s.charAt(i)).append("#");
-
-        int ansLen = 0;
-        int ansCenter = 0;
-        for(int i = 0; i < sb.length(); i++){
-            int left = i - 1, right = i + 1;
-            int len = sb.charAt(i) == '#' ? 0 : 1;
-
-            while(left >= 0 && right < sb.length() && sb.charAt(left) == sb.charAt(right)){
-                if(sb.charAt(left) != '#') len += 2;
-                left--;
-                right++;
-            }
-            if(len > ansLen){
-                ansCenter = i;
-                ansLen = len;
-            }
-        }
-
-        // System.out.println(ansCenter);
-        int start = ansCenter - ansLen;
-        int end = ansCenter + ansLen;
-        StringBuilder result = new StringBuilder();
-
-        for (int i = start; i <= end; i++) {
-            if (sb.charAt(i) != '#') {
-                result.append(sb.charAt(i));
+        int len = 0, ansLeft = 0, ansRight = 0;
+        for(int i = 1; i < s.length(); i++){
+            int[] boundary1 = expand(s, i - 1, i + 1);
+            int[] boundary2 = new int[2];
+            if(s.charAt(i) == s.charAt(i - 1)) boundary2 = expand(s, i - 2, i + 1);
+            int len1 = boundary1[1] - boundary1[0];
+            int len2 = boundary2[1] - boundary2[0];
+            if(len < len1 || len < len2){
+                if(len1 < len2){
+                    len = len2;
+                    ansLeft = boundary2[0];
+                    ansRight = boundary2[1];
+                }
+                else{
+                    len = len1;
+                    ansLeft = boundary1[0];
+                    ansRight = boundary1[1];
+                }
             }
         }
 
-        return result.toString();
+        return s.substring(ansLeft, ansRight + 1);
     }
 }
