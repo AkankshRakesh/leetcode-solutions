@@ -1,39 +1,29 @@
 class Solution {
+    public int findIndex(int[][] events, int index){
+        int left = index + 1, right = events.length - 1;
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            if(events[mid][0] > events[index][1]) right = mid - 1;
+            else left = mid + 1;
+        }
+
+        return left;
+    }
+    public int solve(int[][] events, int[][] dp, int index, int k){
+        if(index >= events.length || k == 0) return 0;
+        if(dp[index][k] != -1) return dp[index][k];
+
+        int nextInd = findIndex(events, index);
+        int pick = events[index][2] + solve(events, dp, nextInd, k - 1);
+        int notPick = solve(events, dp, index + 1, k);
+
+        return dp[index][k] = Math.max(pick, notPick);
+    }
     public int maxTwoEvents(int[][] events) {
-        Arrays.sort(events, (a, b) -> a[0] - b[0]);
+        Arrays.sort(events, (a, b) -> Integer.compare(a[0], b[0]));
+        int[][] dp = new int[events.length][3];
+        for(int i = 0; i < events.length; i++) Arrays.fill(dp[i], -1);
 
-        int n = events.length;
-
-        int[] suffixMax = new int[n];
-        suffixMax[n - 1] = events[n - 1][2];
-        for (int i = n - 2; i >= 0; i--) {
-            suffixMax[i] = Math.max(suffixMax[i + 1], events[i][2]);
-        }
-
-        int ans = 0;
-
-        for (int i = 0; i < n; i++) {
-            int value = events[i][2];
-            int end = events[i][1];
-
-            int l = i + 1, r = n - 1, idx = -1;
-            while (l <= r) {
-                int mid = (l + r) / 2;
-                if (events[mid][0] > end) {
-                    idx = mid;
-                    r = mid - 1;
-                } else {
-                    l = mid + 1;
-                }
-            }
-
-            if (idx != -1) {
-                value += suffixMax[idx];
-            }
-
-            ans = Math.max(ans, value);
-        }
-
-        return ans;
+        return solve(events, dp, 0, 2);
     }
 }
