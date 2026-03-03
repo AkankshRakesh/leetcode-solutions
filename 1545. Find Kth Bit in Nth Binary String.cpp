@@ -18,7 +18,7 @@ private:
         if (i == mid) {
             return '1';
         } else if (i < mid) {
-            return findDigit(i, n - 1, arr);
+            return findDigit(i, n - 1, arr);  
         } else {
             return findDigit(mid - (i - mid), n - 1, arr) == '0' ? '1' : '0';
         }
