@@ -2,8 +2,8 @@ class Solution {
 public:
     vector<int> minInterval(vector<vector<int>>& intervals, vector<int>& queries) {
         auto cmp = [](const vector<int>& a, const vector<int>& b) {
-            return (b[1] - b[0]) > (a[1] - a[0]);
-        };
+    return (a[1] - a[0]) > (b[1] - b[0]);
+};
         priority_queue<vector<int>, vector<vector<int>>, decltype(cmp)> pq(cmp);
 
         sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
