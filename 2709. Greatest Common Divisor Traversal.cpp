@@ -1,13 +1,8 @@
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <algorithm>
-
 class Solution {
     class DSU {
     public:
-        std::vector<int> parent;
-        std::vector<int> rank;
+        vector<int> parent;
+        vector<int> rank;
 
         DSU(int n) : parent(n), rank(n, 0) {
             for (int i = 0; i < n; i++) parent[i] = i;
@@ -37,19 +32,19 @@ class Solution {
     };
 
 public:
-    bool canTraverseAllPairs(const std::vector<int>& nums) {
+    bool canTraverseAllPairs(const vector<int>& nums) {
         int maxVal = nums[0];
-        std::unordered_set<int> numbers;
+        unordered_set<int> numbers;
         bool allOne = true;
         for (int num : nums) {
             if (num != 1) allOne = false;
             numbers.insert(num);
-            maxVal = std::max(maxVal, num);
+            maxVal = max(maxVal, num);
         }
         if (allOne && nums.size() > 1) return false;
 
-        std::vector<bool> isPrime(maxVal + 1, true);
-        std::unordered_map<int, std::vector<int>> adj;
+        vector<bool> isPrime(maxVal + 1, true);
+        unordered_map<int, vector<int>> adj;
 
         for (int i = 2; i <= maxVal; i++) {
             if (isPrime[i]) {
