@@ -7,7 +7,7 @@ public:
         for (auto num : nums) {
             right = max(right, num);
         }
-
+  
         while (left < right) {
             int middle = (left + right) / 2;
 
