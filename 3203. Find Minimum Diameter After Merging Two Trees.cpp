@@ -51,7 +51,7 @@ public:
         vector<vector<int>> adjList2 = buildAdjList(m, edges2);
 
         int diameter1 = findDiameter(n, adjList1);
-        int diameter2 = findDiameter(m, adjList2);
+        int diameter2 = findDiameter(m, adjList2); 
 
         int combinedDiameter =
             ceil(diameter1 / 2.0) + ceil(diameter2 / 2.0) + 1;
