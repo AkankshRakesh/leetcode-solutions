@@ -1,34 +1,25 @@
-public class Solution {
-
+class Solution {
     public int numberOfAlternatingGroups(int[] colors, int k) {
-        int[] extendedColors = new int[colors.length + k - 1];
-        for (int i = 0; i < colors.length; i++) {
-            extendedColors[i] = colors[i];
+        int left = 0, right = 0;
+        HashSet<Integer> badIndexes = new HashSet<>();
+        for(right = 1; right < k; right++){
+            if(colors[right] == colors[right - 1]) badIndexes.add(right - 1);
         }
-        for (int i = 0; i < k - 1; i++) {
-            extendedColors[colors.length + i] = colors[i];
-        }
+        int ans = 0;
+        // if(badIndexes.isEmpty()) ans++;
+        for(left = 0; left < colors.length; left++){
+            if(badIndexes.isEmpty()) ans++;
+            if(badIndexes.contains(left)) badIndexes.remove(left);
 
-        int length = extendedColors.length;
-        int result = 0;
-        int left = 0;
-        int right = 1;
-
-        while (right < length) {
-            if (extendedColors[right] == extendedColors[right - 1]) {
-                left = right;
-                right++;
-                continue;
-            }
-
+            int modRight = right % colors.length;
+            int modPrevRight = modRight != 0 ? modRight - 1 : colors.length - 1;
+            if(colors[modPrevRight] == colors[modRight]) badIndexes.add(modRight - 1);
             right++;
+            // for(int indexes : badIndexes) System.out.print(indexes + " ");
+            // System.out.println();
 
-            if (right - left < k) continue;
-
-            result++;
-            left++;
         }
 
-        return result;
+        return ans;
     }
 }
