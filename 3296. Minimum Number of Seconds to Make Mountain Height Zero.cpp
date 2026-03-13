@@ -1,29 +1,30 @@
 class Solution {
-    public boolean check(int[] workerTimes, long target, int totalJob){
-        long jobDone = 0;
-        for(int worker : workerTimes){
-            jobDone += (long)((Math.sqrt(1 + (8.0 * target) / worker) - 1) / 2);
+public:
+    bool check(const vector<int>& workerTimes, long long target, int totalJob) {
+        long long jobDone = 0;
+        for (int worker : workerTimes) {
+            jobDone += static_cast<long long>((sqrt(1 + (8.0 * target) / worker) - 1) / 2);
         }
-
-        if(jobDone >= totalJob) return true;
-        return false;
+        return jobDone >= totalJob;
     }
-    public long minNumberOfSeconds(int mountainHeight, int[] workerTimes) {
-        long ans = 0;
-        Arrays.sort(workerTimes);
-        long left = 0, right = 0;
-        right = (long)((mountainHeight / 2.0) * (2 + mountainHeight - 1));
+
+    long long minNumberOfSeconds(int mountainHeight, vector<int>& workerTimes) {
+        long long ans = 0;
+        sort(workerTimes.begin(), workerTimes.end());
+        long long left = 0, right = 0;
+        right = static_cast<long long>((mountainHeight / 2.0) * (2 + mountainHeight - 1));
         right *= workerTimes[0];
 
-        while(left <= right){
-            long mid = left + (right - left) / 2;
-            if(check(workerTimes, mid, mountainHeight)){
+        while (left <= right) {
+            long long mid = left + (right - left) / 2;
+            if (check(workerTimes, mid, mountainHeight)) {
                 ans = mid;
                 right = mid - 1;
+            } else {
+                left = mid + 1;
             }
-            else left = mid + 1;
         }
 
         return ans;
     }
-}
+};
