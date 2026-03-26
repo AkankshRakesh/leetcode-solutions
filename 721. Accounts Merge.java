@@ -1,7 +1,7 @@
 class Solution {
-    class DSU{
-        public int[] parent;
-        public int[] rank;
+    public class DSU{
+        int[] parent;
+        int[] rank;
         public DSU(int n){
             parent = new int[n];
             rank = new int[n];
@@ -13,68 +13,61 @@ class Solution {
             return n;
         }
 
-        public boolean union(int u, int v){
-            int p1 = find(u);
-            int p2 = find(v);
-            
-            if(p1 == p2) return false;
+        public void union(int x, int y){
+            int p1 = find(x);
+            int p2 = find(y);
+            if(p1 == p2) return;
+
             if(rank[p1] < rank[p2]){
-                parent[p1] = p2; 
+                parent[p1] = p2;
             }
             else if(rank[p1] > rank[p2]){
-                parent[p2] = p1;
+                parent[p1] = p2;
             }
             else{
-                rank[p1]++;
-                parent[p2] = p1;
+                parent[p1] = p2;
+                rank[p2]++;
             }
-            return true;
         }
     }
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
+        HashMap<String, Integer> emails = new HashMap<>();
         DSU dsu = new DSU(accounts.size());
-        HashMap<String, Integer> emailToIndex = new HashMap<>();
         for(int i = 0; i < accounts.size(); i++){
-            boolean isName = true;
-            for(String email : accounts.get(i)){
-                if(isName){
-                    isName = !isName;
-                    continue;
-                }
-                if(emailToIndex.containsKey(email)){
-                    dsu.union(emailToIndex.get(email), i);
-                }
-                else{
-                    emailToIndex.put(email, i);
+            List<String> accs = accounts.get(i);
+            for(int j = 1; j < accs.size(); j++){
+                String email = accs.get(j);
+                if(emails.containsKey(email)) dsu.union(i, emails.get(email));
+                else emails.put(email, i);
+            }
+        }
+
+        HashMap<Integer, List<String>> res = new HashMap<>();
+        HashMap<Integer, HashSet<String>> userEmails = new HashMap<>();
+        for(int i = 0; i < accounts.size(); i++){
+            List<String> accs = accounts.get(i);
+            int parent = dsu.find(i);
+            if(!res.containsKey(parent)) res.put(parent, new ArrayList<>());
+            if(!userEmails.containsKey(parent)) userEmails.put(parent, new HashSet<>());
+
+            for(int j = 1; j < accs.size(); j++){
+                if(emails.get(accs.get(j)) == i && !userEmails.get(parent).contains(accs.get(j))){
+                    userEmails.get(parent).add(accs.get(j));
+                    res.get(parent).add(accs.get(j));
                 }
             }
         }
-        
-        HashMap<Integer, List<String>> indexHm = new HashMap<>();
+
         List<List<String>> ans = new ArrayList<>();
-        for(Map.Entry<String, Integer> ele : emailToIndex.entrySet()){
-            int index = ele.getValue();
-            String email = ele.getKey();
-            int parent = dsu.find(index);
-            if(parent == index){
-                List<String> temp = indexHm.getOrDefault(index, new ArrayList<>());
-                temp.add(email);
-                indexHm.put(index, temp);
-            }
-            else{
-                List<String> temp = indexHm.getOrDefault(parent, new ArrayList<>());
-                temp.add(email);
-                indexHm.put(parent, temp);
-            }
-        }
+        for(Map.Entry<Integer, List<String>> ele : res.entrySet()){
+            int index = ele.getKey();
+            List<String> arr = ele.getValue();
+            Collections.sort(arr);
+            List<String> nameArr = new ArrayList<>();
+            nameArr.add(accounts.get(index).get(0));
+            for(String str : arr) nameArr.add(str);
 
-        for(Map.Entry<Integer, List<String>> ele : indexHm.entrySet()){
-            List<String> curr = new ArrayList<>();
-            curr.add(accounts.get(ele.getKey()).get(0));
-
-            Collections.sort(ele.getValue());
-            for(String str : ele.getValue()) curr.add(str);
-            ans.add(curr);
+            ans.add(nameArr);
         }
 
         return ans;
