@@ -1,19 +1,26 @@
 class Solution {
+    public int recurse(HashMap<Integer, Integer> hm, boolean[] visited, int[] seq, int key){
+        if(!hm.containsKey(key)) return 0;
+        if(visited[hm.get(key)]) return seq[hm.get(key)];
+
+        visited[hm.get(key)] = true;
+        return seq[hm.get(key)] = 1 + recurse(hm, visited, seq, key + 1);
+    }
     public int longestConsecutive(int[] nums) {
         if(nums.length == 0) return 0;
-        HashSet<Integer> hs = new HashSet<Integer>();
-
-        for(int num : nums) hs.add(num);
+        HashMap<Integer, Integer> hm = new HashMap<>();
+        boolean[] visited = new boolean[nums.length];
+        int[] seq = new int[nums.length];
+        int ans = 1;
+        for(int i = 0; i < nums.length; i++){
+            if(!hm.containsKey(nums[i])) hm.put(nums[i], i);
+        }
         
-        int maxCount = 1;
-        for(int num : hs){
-            if(!hs.contains(num - 1)){
-                int count = 1;
-                while(hs.contains(num + count)) count++;
-                if(maxCount < count) maxCount = count;
-            }
+        for(int num : nums){
+            recurse(hm, visited, seq, num);
+            ans = Math.max(ans, seq[hm.get(num)]);
         }
 
-        return maxCount;
+        return ans;
     }
 }
