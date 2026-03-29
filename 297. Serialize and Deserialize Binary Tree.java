@@ -1,77 +1,74 @@
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
-public class Codec {
+class Codec {
+public:
 
     // Encodes a tree to a single string.
-    public String serialize(TreeNode root) {
-        if(root == null) return "";
-        ArrayList<Integer> arr = new ArrayList<>();
-        Queue<TreeNode> q = new LinkedList<>();
-        q.offer(root);
-        arr.add(root.val);
-        while(!q.isEmpty()){
-            TreeNode node = q.poll();
-            if(node.left == null) arr.add(1001);
-            else{
-                arr.add(node.left.val);
-                q.offer(node.left);
+    string serialize(TreeNode* root) {
+        if (root == nullptr) return "";
+        vector<int> arr;
+        queue<TreeNode*> q;
+        q.push(root);
+        arr.push_back(root->val);
+        while (!q.empty()) {
+            TreeNode* node = q.front();
+            q.pop();
+            if (node->left == nullptr) arr.push_back(1001);
+            else {
+                arr.push_back(node->left->val);
+                q.push(node->left);
             }
-            
-            if(node.right == null) arr.add(1001);
-            else{
-                arr.add(node.right.val);
-                q.offer(node.right);
+
+            if (node->right == nullptr) arr.push_back(1001);
+            else {
+                arr.push_back(node->right->val);
+                q.push(node->right);
             }
         }
 
-        for(int num : arr) System.out.print(num + " ");
-        StringBuilder sb = new StringBuilder();
+        // Optional: print the array values (commented out)
+        // for (int num : arr) cout << num << " ";
 
-        for(int i = 0; i < arr.size(); i++){
-            sb.append(arr.get(i));
-            sb.append("#");
+        stringstream ss;
+        for (size_t i = 0; i < arr.size(); i++) {
+            ss << arr[i];
+            ss << "#";
         }
 
-        return sb.toString();
+        return ss.str();
     }
 
     // Decodes your encoded data to tree.
-    public TreeNode deserialize(String data) {
-        if(data.length() == 0) return null;
-        String[] vals = data.split("#");
-        TreeNode root = new TreeNode(Integer.parseInt(vals[0]));
-        Queue<TreeNode> q = new LinkedList<>();
-        q.offer(root);
+    TreeNode* deserialize(const string& data) {
+        if (data.empty()) return nullptr;
+        vector<string> vals;
+        string token;
+        stringstream ss(data);
+        while (getline(ss, token, '#')) {
+            if (!token.empty())
+                vals.push_back(token);
+        }
+
+        TreeNode* root = new TreeNode(stoi(vals[0]));
+        queue<TreeNode*> q;
+        q.push(root);
         int index = 1;
 
-        while(!q.isEmpty() && index < vals.length){
-            TreeNode curr = q.poll();
-            if(!vals[index].equals("1001")){
-                curr.left = new TreeNode(Integer.parseInt(vals[index]));
-                q.offer(curr.left);
-            }
+        while (!q.empty() && index < (int)vals.size()) {
+            TreeNode* curr = q.front();
+            q.pop();
 
+            if (vals[index] != "1001") {
+                curr->left = new TreeNode(stoi(vals[index]));
+                q.push(curr->left);
+            }
             index++;
-            if(index < vals.length && !vals[index].equals("1001")){
-                curr.right = new TreeNode(Integer.parseInt(vals[index]));
-                q.offer(curr.right);
-            }
 
+            if (index < (int)vals.size() && vals[index] != "1001") {
+                curr->right = new TreeNode(stoi(vals[index]));
+                q.push(curr->right);
+            }
             index++;
         }
 
         return root;
     }
-}
-
-// Your Codec object will be instantiated and called as such:
-// Codec ser = new Codec();
-// Codec deser = new Codec();
-// TreeNode ans = deser.deserialize(ser.serialize(root));
+};
