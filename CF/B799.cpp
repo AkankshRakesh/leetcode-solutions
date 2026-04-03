@@ -1,50 +1,55 @@
-import java.util.HashMap;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-public class B799 {
-    public static void main(String[] args){
-        Scanner sc = new Scanner(System.in);
-        int n = sc.nextInt();
-        HashMap<Integer, PriorityQueue<Integer>> hm = new HashMap<>();
-        boolean[] used = new boolean[n];
-        int[] prices = new int[n];
-        int[] front = new int[n];
-        int[] back = new int[n];
+    int n;
+    cin >> n;
+    vector<int> prices(n), front(n), back(n);
+    vector<bool> used(n, false);
 
-        for(int i = 0; i < n; i++) prices[i] = sc.nextInt();
-        for(int i = 0; i < n; i++) front[i] = sc.nextInt();
-        for(int i = 0; i < n; i++) back[i] = sc.nextInt();
+    for (int i = 0; i < n; i++) cin >> prices[i];
+    for (int i = 0; i < n; i++) cin >> front[i];
+    for (int i = 0; i < n; i++) cin >> back[i];
 
-        for(int i = 0; i < n; i++){
-            PriorityQueue<Integer> pq1 = hm.getOrDefault(front[i], new PriorityQueue<>((a, b) -> Integer.compare(prices[a], prices[b])));
-            pq1.offer(i);
-            hm.put(front[i], pq1);
-            PriorityQueue<Integer> pq2 = hm.getOrDefault(back[i], new PriorityQueue<>((a, b) -> Integer.compare(prices[a], prices[b])));
-            pq2.offer(i);
-            hm.put(back[i], pq2);
+    unordered_map<int, priority_queue<int, vector<int>, function<bool(int,int)>>> hm;
+
+    auto cmp = [&](int a, int b) { return prices[a] > prices[b]; };
+
+    for (int i = 0; i < n; i++) {
+        if (hm.find(front[i]) == hm.end()) {
+            hm[front[i]] = priority_queue<int, vector<int>, function<bool(int,int)>>(cmp);
         }
+        hm[front[i]].push(i);
 
-        int queries = sc.nextInt();
-        int[] q = new int[queries];
-        for(int i = 0; i < queries; i++) q[i] = sc.nextInt();
-        int[] ans = new int[queries];
-        for(int i = 0; i < queries; i++){
-            // System.out.println(q[i]);
-            if(!hm.containsKey(q[i])) ans[i] = -1;
-            else{
-                PriorityQueue<Integer> pq = hm.get(q[i]);
-                while(!pq.isEmpty() && used[pq.peek()]) pq.poll();
-                if(pq.isEmpty()) ans[i] = -1;
-                else{
-                    ans[i] = prices[pq.peek()];
-                    used[pq.peek()] = true;
-                }
+        if (hm.find(back[i]) == hm.end()) {
+            hm[back[i]] = priority_queue<int, vector<int>, function<bool(int,int)>>(cmp);
+        }
+        hm[back[i]].push(i);
+    }
+
+    int queries;
+    cin >> queries;
+    vector<int> q(queries);
+    for (int i = 0; i < queries; i++) cin >> q[i];
+    vector<int> ans(queries);
+
+    for (int i = 0; i < queries; i++) {
+        if (hm.find(q[i]) == hm.end()) {
+            ans[i] = -1;
+        } else {
+            auto &pq = hm[q[i]];
+            while (!pq.empty() && used[pq.top()]) pq.pop();
+            if (pq.empty()) {
+                ans[i] = -1;
+            } else {
+                ans[i] = prices[pq.top()];
+                used[pq.top()] = true;
             }
         }
-
-        for(int ansVal : ans) System.out.print(ansVal + " ");
-
-        sc.close();
     }
+
+    for (int val : ans) cout << val << " ";
+    cout << "\n";
+
+    return 0;
 }
