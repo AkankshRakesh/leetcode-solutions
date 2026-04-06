@@ -1,16 +1,14 @@
 class Solution {
     class DSU {
         vector<int> parent;
-        vector<int> rank;
+        vector<int> size;
     public:
-        DSU(int n) : parent(n), rank(n, 1) {
-            for (int i = 0; i < n; i++) {
-                parent[i] = i;
-            }
+        DSU(int n) : parent(n), size(n, 1) {
+            for (int i = 0; i < n; i++) parent[i] = i;
         }
 
         int find(int node) {
-            if (parent[node] != node) 
+            if (parent[node] != node)
                 parent[node] = find(parent[node]);
             return parent[node];
         }
@@ -20,43 +18,49 @@ class Solution {
             int p2 = find(n2);
             if (p1 == p2) return;
 
-            if (rank[p1] > rank[p2]) parent[p2] = p1;
-            else if (rank[p1] < rank[p2]) parent[p1] = p2;
-            else {
+            if (size[p1] > size[p2]) {
+                size[p1] += size[p2];
                 parent[p2] = p1;
-                rank[p1]++;
+            } else {
+                size[p2] += size[p1];
+                parent[p1] = p2;
             }
+        }
+
+        int getSize(int n) {
+            return size[find(n)];
         }
     };
 
 public:
     int minCostConnectPoints(vector<vector<int>>& points) {
-        using Edge = vector<int>;
-        auto cmp = [](const Edge& a, const Edge& b) { return a[2] > b[2]; };
-        priority_queue<Edge, vector<Edge>, decltype(cmp)> pq(cmp);
-
+        int cost = 0;
+        vector<vector<int>> edges;
         int n = points.size();
+        DSU dsu(n);
+
         for (int i = 0; i < n; i++) {
+            auto& pointsA = points[i];
             for (int j = i + 1; j < n; j++) {
-                int dist = abs(points[i][0] - points[j][0]) + abs(points[i][1] - points[j][1]);
-                pq.push({i, j, dist});
+                auto& pointsB = points[j];
+                edges.push_back({i, j, abs(pointsA[0] - pointsB[0]) + abs(pointsA[1] - pointsB[1])});
             }
         }
 
-        int cost = 0;
-        DSU dsu(n);
-        while (!pq.empty()) {
-            auto edge = pq.top();
-            pq.pop();
+        sort(edges.begin(), edges.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[2] < b[2];
+        });
+
+        for (auto& edge : edges) {
             int u = edge[0];
             int v = edge[1];
-            int edgeCost = edge[2];
-            if (dsu.find(u) != dsu.find(v)) {
-                dsu.unionSets(u, v);
-                cost += edgeCost;
-            }
+            if (dsu.find(u) == dsu.find(v)) continue;
+            dsu.unionSets(u, v);
+            cost += edge[2];
+            if (dsu.getSize(u) == n) return cost;
         }
 
-        return cost;
+        return 0;
     }
 };
+
