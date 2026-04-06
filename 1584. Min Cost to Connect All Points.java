@@ -1,14 +1,12 @@
 class Solution {
     class DSU{
         int[] parent;
-        int[] rank;
+        int[] size;
         public DSU(int n){
             parent = new int[n];
-            rank = new int[n];
-            for(int i = 0; i < n; i++){
-                parent[i] = i;
-                rank[i] = 1;
-            }
+            size = new int[n];
+            for(int i = 0; i < n; i++) parent[i] = i;
+            Arrays.fill(size, 1);
         }
 
         public int find(int node){
@@ -21,37 +19,46 @@ class Solution {
             int p2 = find(n2);
             if(p1 == p2) return;
 
-            if(rank[p1] > rank[p2]) parent[p2] = p1;
-            else if(rank[p1] < rank[p2]) parent[p1] = p2;
-            else{
-                parent[p2] = p1;
-                p1++;
+            if(size[p1] > size[p2]){
+                size[p1] += size[p2];
+                parent[p2] = p1; 
             }
+            else{
+                size[p2] += size[p1];
+                parent[p1] = p2;
+            }
+        }
+
+        public int getSize(int n){
+            return size[find(n)];
         }
     }
 
     public int minCostConnectPoints(int[][] points) {
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[2], b[2]));
-        for(int i = 0; i < points.length; i++){
-            for(int j = i + 1; j < points.length; j++){
-                int dist = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
-                pq.offer(new int[]{i, j, dist});
+        int cost = 0;
+        ArrayList<int[]> edges = new ArrayList<>();
+        int n = points.length;
+        DSU dsu = new DSU(n);
+
+        for(int i = 0; i < n; i++){
+            int[] pointsA = points[i];
+            for(int j = i + 1; j < n; j++){
+                int[] pointsB = points[j];
+                edges.add(new int[]{i, j, Math.abs(pointsA[0] - pointsB[0]) + Math.abs(pointsA[1] - pointsB[1])});
             }
         }
 
-        int cost = 0;
-        DSU dsu = new DSU(points.length);
-        while(!pq.isEmpty()){
-            int[] edge = pq.poll();
+        Collections.sort(edges, (a, b) -> Integer.compare(a[2], b[2]));
+        
+        for(int[] edge : edges){
             int u = edge[0];
             int v = edge[1];
-            int edgeCost = edge[2];
-            if(dsu.find(u) != dsu.find(v)){
-                dsu.union(u, v);
-                cost += edgeCost;
-            }
+            if(dsu.find(u) == dsu.find(v)) continue;
+            dsu.union(u, v);
+            cost += edge[2];
+            if(dsu.getSize(u) == n) return cost;
         }
 
-        return cost;
+        return 0;
     }
 }
