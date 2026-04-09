@@ -14,27 +14,24 @@
  * }
  */
 class Solution {
-    public TreeNode build(Queue<Integer> preOrder, int[] inorder, HashMap<Integer, Integer> hm, int lastInd){
-        if(preOrder.isEmpty()) return null;
-        int val = preOrder.peek();
-        int index = hm.get(val);
+    int index = 0;
+    public TreeNode build(int[] preorder, HashMap<Integer, Integer> hm, int left, int right){
+        if(left > right) return null;
+        TreeNode node = new TreeNode(preorder[index]);
+        index++;
 
-        if(index > lastInd) return null;
-        preOrder.poll();
-        TreeNode curr = new TreeNode(val);
-        curr.left = build(preOrder, inorder, hm, index);
-        curr.right = build(preOrder, inorder, hm, lastInd);
+        int rootIndex = hm.get(node.val);
+        node.left = build(preorder, hm, left, rootIndex - 1);
+        node.right = build(preorder, hm, rootIndex + 1, right);
 
-        return curr;
+        return node;
     }
     public TreeNode buildTree(int[] preorder, int[] inorder) {
         HashMap<Integer, Integer> hm = new HashMap<>();
         for(int i = 0; i < inorder.length; i++){
             hm.put(inorder[i], i);
         }
-        Queue<Integer> q = new LinkedList<>();
-        for(int node : preorder) q.offer(node);
-
-        return build(q, inorder, hm, inorder.length - 1); 
+        TreeNode root = build(preorder, hm, 0, inorder.length - 1);
+        return root;
     }
 }
