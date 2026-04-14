@@ -14,18 +14,19 @@
  * }
  */
 class Solution {
-    int ans = 0;
-    public int trav(TreeNode node){
+    int ans = Integer.MIN_VALUE;
+    public int getAns(TreeNode node){
         if(node == null) return 0;
+        int left = getAns(node.left);
+        int right = getAns(node.right);
         
-        int left = trav(node.left);
-        int right = trav(node.right);
-
         ans = Math.max(ans, left + right);
-        return Math.max(left, right) + 1;
-    } 
+        // System.out.println(left + " " + right + " : " + node.val);
+        return 1 + Math.max(left, right);
+    }
+
     public int diameterOfBinaryTree(TreeNode root) {
-        trav(root);
-        return ans;
+        getAns(root);
+        return ans;    
     }
 }
