@@ -12,7 +12,7 @@ public:
             dfs(nums, index + 1, dp, curr, target, count)
         );
     }
-
+   
     int minRemovals(vector<int>& nums, int target) {
         int max_val = nums[0];
         for (int num : nums) max_val = max(max_val, num);
