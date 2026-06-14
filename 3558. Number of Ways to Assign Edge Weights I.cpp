@@ -39,4 +39,4 @@ class Solution {
         int maxDep = dfs(g, 1, 0);
         return qpow(2, maxDep - 1);
     }
-}
+} 
