@@ -1,42 +1,26 @@
 class Solution {
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        HashMap<Integer, ArrayList<int[]>> adj = new HashMap<>();
-        for(int[] flight : flights){
-            ArrayList<int[]> temp = adj.getOrDefault(flight[0], new ArrayList<>());
-            temp.add(new int[]{flight[1], flight[2]});
-            adj.put(flight[0], temp);
-        }
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
 
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> Integer.compare(a[1], b[1]));
-        pq.offer(new int[]{src, 0, 0});
-        int[][] visited = new int[n][k + 2];
-        for(int i = 0; i < n; i++){
-            Arrays.fill(visited[i], Integer.MAX_VALUE);
-        }
-        visited[src][0] = 0;
+        for(int i = 0; i <= k; i++){
+            int[] tempDist = new int[n];
+            for(int j = 0; j < n; j++) tempDist[j] = dist[j];
 
-        while(!pq.isEmpty()){
-            int node = pq.peek()[0];
-            int cost = pq.peek()[1];
-            int stops = pq.poll()[2];
-
-            if(stops > k + 1) continue;
-            if(node == dst) return cost;
-            if(!adj.containsKey(node)) continue;
-
-            for(int[] neig : adj.get(node)){
-                int nextNode = neig[0];
-                int nextCost = cost + neig[1];
-                int nextStops = stops + 1;
-                if(nextStops > k + 1) continue;
-
-                if(visited[nextNode][nextStops] > nextCost){
-                    pq.offer(new int[]{nextNode, nextCost, nextStops});
-                    visited[nextNode][nextStops] = nextCost;
+            for(int[] flight : flights){
+                int u = flight[0];
+                int v = flight[1];
+                int cost = flight[2];
+                if(dist[flight[0]] != Integer.MAX_VALUE && dist[flight[0]] + flight[2] < tempDist[flight[1]]){
+                    tempDist[flight[1]] = dist[flight[0]] + flight[2];
                 }
             }
-        }
 
-        return -1;
+            for(int j = 0; j < n; j++) dist[j] = tempDist[j];
+        }
+        
+        if(dist[dst] == Integer.MAX_VALUE) return -1;
+        return dist[dst];
     }
 }
