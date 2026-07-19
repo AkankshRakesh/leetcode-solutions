@@ -14,28 +14,35 @@
  * }
  */
 class Solution {
-    public TreeNode getPrev(TreeNode node){
-        while(node.right != null) node = node.right;
+    public TreeNode findNode(TreeNode node, int key){
+        if(node == null) return null;
+
+        TreeNode left = findNode(node.left, key);
+        TreeNode right = findNode(node.right, key);
+        if(node.val == key){
+            if(node.left == null && node.right == null) return null;
+            else if(node.left == null){
+                return node.right;
+            }
+            else if(node.right == null){
+                return node.left;
+            }
+            else{
+                TreeNode next = node.right;
+                while(next.left != null) next = next.left;
+                node.val = next.val;
+                node.right = findNode(node.right, next.val);
+                node.left = left;
+            }
+        }
+        else{
+            node.left = left;
+            node.right = right;
+        }
 
         return node;
     }
     public TreeNode deleteNode(TreeNode root, int key) {
-        if(root == null) return null;
-
-        if(root.val < key) root.right = deleteNode(root.right, key);
-        else if(root.val > key) root.left = deleteNode(root.left, key);
-        else{
-            if(root.left == null && root.right == null) return null;
-            else if(root.left == null) return root.right;
-            else if(root.right == null) return root.left;
-            else{
-                TreeNode prev = getPrev(root.left);
-                root.val = prev.val;
-
-                root.left = deleteNode(root.left, prev.val);
-            }
-        }
-
-        return root;
+        return findNode(root, key);
     }
 }
