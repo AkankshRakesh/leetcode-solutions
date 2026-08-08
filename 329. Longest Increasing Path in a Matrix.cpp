@@ -12,7 +12,7 @@ public:
             trav(matrix, memo, matrix[i][j], i, j + 1, n, m),
             trav(matrix, memo, matrix[i][j], i, j - 1, n, m)
         });
-
+ 
         memo[i][j] = found;
         return found;
     }
