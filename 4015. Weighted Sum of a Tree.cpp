@@ -1,56 +1,53 @@
 class Solution {
 public:
     long long weightedSum(vector<int>& parent, vector<int>& nums) {
-        unordered_map<int, vector<int>> adj;
+        int n = parent.size();
 
-        for (int i = 1; i < parent.size(); i++) {
-            vector<int> temp = adj.count(parent[i]) ? adj[parent[i]] : vector<int>();
-            temp.push_back(i);
-            adj[parent[i]] = temp;
+        vector<vector<int>> adj(n);
+
+        for (int i = 1; i < n; i++) {
+            adj[parent[i]].push_back(i);
         }
 
-        long long h = 0;
+        int h = 0;
         queue<int> q;
         q.push(0);
 
-        long long ans = 0;
         while (!q.empty()) {
-            int size = q.size();
+            int sz = q.size();
 
-            for (int i = 0; i < size; i++) {
+            while (sz--) {
                 int node = q.front();
                 q.pop();
 
-                if (!adj.count(node))
-                    continue;
-
-                for (int neig : adj[node])
-                    q.push(neig);
+                for (int child : adj[node]) {
+                    q.push(child);
+                }
             }
 
             h++;
         }
 
-        long long d = 1;
+        long long ans = 0;
+        int depth = 0;
+
         q.push(0);
 
         while (!q.empty()) {
-            int size = q.size();
+            int sz = q.size();
 
-            for (int i = 0; i < size; i++) {
+            while (sz--) {
                 int node = q.front();
                 q.pop();
 
-                ans += (long long)(nums[node] * (h - d + 1));
+                ans += 1LL * nums[node] * (h - depth);
 
-                if (!adj.count(node))
-                    continue;
-
-                for (int neig : adj[node])
-                    q.push(neig);
+                for (int child : adj[node]) {
+                    q.push(child);
+                }
             }
 
-            d++;
+            depth++;
         }
 
         return ans;
