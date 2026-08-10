@@ -1,33 +1,48 @@
 class Solution {
     public List<Integer> partitionLabels(String s) {
-        int n = s.length();
-        int[] lastSeen = new int[26];
-        for(int i = 1; i < n; i++){
-            char ch = s.charAt(i);
-            lastSeen[ch - 'a'] = i;
+        List<Integer> ans = new ArrayList<>();
+        int lastPartitionIndex = -1;
+
+        int[][] prefixArr = new int[s.length()][128];
+        for(int i = 0; i < s.length(); i++){
+            int[] freq = prefixArr[i];
+            freq[s.charAt(i)]++;
+
+            if(i == 0) continue;
+            int[] pastFreq = prefixArr[i - 1];
+            for(int j = 0; j < 128; j++) freq[j] += pastFreq[j];
         }
 
-        HashSet<Character> hs = new HashSet<>();
-        ArrayList<Integer> arr = new ArrayList<>();
+        int[][] suffixArr = new int[s.length()][128];
+        for(int i = s.length() - 1; i >= 0; i--){
+            int[] freq = suffixArr[i];
+            freq[s.charAt(i)]++;
 
-        int lastInd = 0;
-        for(int i = 0; i < n; i++){
-            hs.add(s.charAt(i));
+            if(i == s.length() - 1) continue;
+            int[] pastFreq = suffixArr[i + 1];
+            for(int j = 0; j < 128; j++) freq[j] += pastFreq[j];
+        }
+
+        for(int i = 0; i < s.length() - 1; i++){
+            int[] currFreq = prefixArr[i];
+            int[] nextFreq = suffixArr[i + 1];
+
             boolean res = true;
-            for(char ch : hs){
-                if(lastSeen[ch - 'a'] > i){
+            for(int j = 0; j < 128; j++){
+                if(currFreq[j] != 0 && nextFreq[j] != 0){
                     res = false;
                     break;
                 }
             }
 
             if(res){
-                arr.add(i - lastInd + 1);
-                lastInd = i + 1;
+                // System.out.println(i);
+                ans.add(i - lastPartitionIndex);
+                lastPartitionIndex = i;
             }
         }
 
-        // arr.add(n - lastInd);
-        return arr;
+        ans.add(s.length() - 1 - lastPartitionIndex);
+        return ans;
     }
 }
