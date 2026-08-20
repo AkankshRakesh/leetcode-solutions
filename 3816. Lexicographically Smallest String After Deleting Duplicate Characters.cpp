@@ -12,7 +12,7 @@ public:
                 freq[st.top()]--;
                 st.pop();
             }
-            st.push(s[i]);
+            st.push(s[i]); 
         }
 
         char dup = st.top();
