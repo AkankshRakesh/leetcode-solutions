@@ -23,6 +23,6 @@ class Solution {
         StringBuilder sb = new StringBuilder();
         while(!st.isEmpty()) sb.append(st.pop());
 
-        return sb.reverse().toString();
+        return sb.reverse().toString(); 
     }
 }
