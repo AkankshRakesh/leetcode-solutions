@@ -1,27 +1,27 @@
 class Solution {
 public:
-    int recurse(unordered_map<int, int>& hm, vector<bool>& visited, vector<int>& seq, int key) {
-        if (hm.find(key) == hm.end()) return 0;
-        if (visited[hm[key]]) return seq[hm[key]];
-
-        visited[hm[key]] = true;
-        return seq[hm[key]] = 1 + recurse(hm, visited, seq, key + 1);
-    }
-
     int longestConsecutive(vector<int>& nums) {
-        if (nums.empty()) return 0;
-        unordered_map<int, int> hm;
-        vector<bool> visited(nums.size(), false);
-        vector<int> seq(nums.size(), 0);
-        int ans = 1;
+        unordered_set<int> hs;
+        for (int num : nums) hs.insert(num);
 
-        for (int i = 0; i < (int)nums.size(); i++) {
-            if (hm.find(nums[i]) == hm.end()) hm[nums[i]] = i;
-        }
-
+        int ans = 0;
         for (int num : nums) {
-            recurse(hm, visited, seq, num);
-            ans = max(ans, seq[hm[num]]);
+            if (!hs.count(num)) continue;
+
+            int left = num - 1, right = num + 1;
+
+            while (hs.count(left)) {
+                hs.erase(left);
+                left--;
+            }
+
+            while (hs.count(right)) {
+                hs.erase(right);
+                right++;
+            }
+
+            hs.erase(num);
+            ans = max(ans, 1 + (num - left - 1) + (right - num - 1));
         }
 
         return ans;
