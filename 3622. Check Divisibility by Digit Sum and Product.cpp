@@ -12,4 +12,4 @@ public:
         if (prod + sum == 0) return false;
         return (n % (prod + sum) == 0);
     }
-};
+};  
