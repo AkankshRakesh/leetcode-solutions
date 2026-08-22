@@ -1,17 +1,14 @@
 class Solution {
     public boolean checkDivisibility(int n) {
-        // if(n <= 10) return false;
-        int prod = 1, sum = 0;
+        int sum = 0, product = 1;
         int temp = n;
         while(temp != 0){
-            int lastDig = temp%10;
-            prod *= lastDig;
-            sum += lastDig;
+            sum += temp % 10;
+            product *= temp % 10;
             temp /= 10;
         }
-        // System.out.println(prod);
-        if(prod + sum == 0) return false;
-        if(n % (prod + sum) == 0) return true;
+
+        if(n % (sum + product) == 0) return true;
         return false;
     }
 }
