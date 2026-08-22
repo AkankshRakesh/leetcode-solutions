@@ -1,22 +1,19 @@
-#define MOD 1000000007
+class Solution {
+public:
+    long long solve(int curr, int low, int high, int zero, int one, vector<long long>& dp) {
+        if (curr > high) return 0;
+        if (dp[curr] != -1) return dp[curr];
 
-int countGoodStrings(int low, int high, int zero, int one) {
-    int *possibleStrings = (int *)calloc(high + 1, sizeof(int));
-    possibleStrings[0] = 1;
-    int ans = 0;
+        long long res = solve(curr + zero, low, high, zero, one, dp)
+                      + solve(curr + one, low, high, zero, one, dp);
 
-    for (int i = 1; i <= high; i++) {
-        if (i >= zero) {
-            possibleStrings[i] = (possibleStrings[i] + possibleStrings[i - zero]) % MOD;
-        }
-        if (i >= one) {
-            possibleStrings[i] = (possibleStrings[i] + possibleStrings[i - one]) % MOD;
-        }
-        if (i >= low) {
-            ans = (ans + possibleStrings[i]) % MOD;
-        }
+        if (curr >= low) return dp[curr] = (res + 1) % 1000000007;
+        return dp[curr] = res % 1000000007;
     }
 
-    free(possibleStrings);
-    return ans;
-}
+    int countGoodStrings(int low, int high, int zero, int one) {
+        vector<long long> dp(high + 1, -1);
+
+        return (int)solve(0, low, high, zero, one, dp);
+    }
+};
