@@ -1,24 +1,33 @@
 class Solution {
 public:
-    int countPairs(vector<vector<int>>& coords, int k) {
-        int ans = 0;
-        unordered_map<string, int> hm;
+    long long countPairs(vector<vector<int>>& coords, int k) {
+        long long ans = 0;
 
-        for (int i = coords.size() - 1; i >= 0; i--) {
-            int x1 = coords[i][0];
-            int y1 = coords[i][1];
+        unordered_map<long long, int> mp;
+        mp.reserve(coords.size() * 2);
+        mp.max_load_factor(0.7);
 
-            for (int u = 0; u <= k; u++) {
-                int x2 = u ^ x1;
-                int y2 = (k - u) ^ y1;
+        auto getKey = [](int x, int y) -> long long {
+            return (static_cast<long long>(x) << 32) |
+                   static_cast<unsigned int>(y);
+        };
 
-                string key = to_string(x2) + "#" + to_string(y2);
-                if (hm.count(key))
-                    ans += hm[key];
+        for (int i = coords.size() - 1; i >= 0; --i) {
+            int x = coords[i][0];
+            int y = coords[i][1];
+
+            for (int u = 0; u <= k; ++u) {
+                int x2 = x ^ u;
+                int y2 = y ^ (k - u);
+
+                long long key = getKey(x2, y2);
+
+                auto it = mp.find(key);
+                if (it != mp.end())
+                    ans += it->second;
             }
 
-            string key = to_string(x1) + "#" + to_string(y1);
-            hm[key]++;
+            mp[getKey(x, y)]++;
         }
 
         return ans;
