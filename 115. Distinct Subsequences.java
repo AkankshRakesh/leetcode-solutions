@@ -1,46 +1,21 @@
 class Solution {
-    class Pair{
-        int first;
-        int second;
+    public int dfs(String s, String t, int i, int j, int[][] dp){
+        if(j >= t.length()) return 1;
+        else if(i >= s.length()) return 0;
 
-        public Pair(int first, int second){
-            this.first = first;
-            this.second = second;
-        }
+        if(dp[i][j] != -1) return dp[i][j];
 
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Pair)) return false;
-            Pair p = (Pair) o;
-            return first == p.first && second == p.second;
-        }
+        int pick = 0;
+        if(s.charAt(i) == t.charAt(j)) pick = dfs(s, t, i + 1, j + 1, dp);
 
-        @Override
-        public int hashCode() {
-            return 31 * first + second;
-        }
-    }
-    public int count(String s, String t, HashMap<Pair, Integer> hm, int i, int j, int n, int m){
-        if (j == m) return 1;        
-        if (i == n) return 0;
+        int notPick = dfs(s, t, i + 1, j, dp);
 
-        Pair p = new Pair(i, j);
-        if(hm.containsKey(p)) return hm.get(p);
-
-        int c = 0;
-        if(s.charAt(i) == t.charAt(j)){
-            c = count(s, t, hm, i + 1, j + 1, n, m) + count(s, t, hm, i + 1, j, n, m);
-        }
-        else{
-            c = count(s, t, hm, i + 1, j, n, m);
-        }
-        hm.put(p, c);
-        return c;
+        return dp[i][j] = pick + notPick;
     }
     public int numDistinct(String s, String t) {
-        HashMap<Pair, Integer> hm = new HashMap<>();
+        int[][] dp = new int[s.length()][t.length()];
+        for(int i = 0; i < s.length(); i++) Arrays.fill(dp[i], -1);
 
-        return count(s, t, hm, 0, 0, s.length(), t.length());
+        return dfs(s, t, 0, 0, dp);
     }
 }
