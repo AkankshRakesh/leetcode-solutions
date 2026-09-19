@@ -1,33 +1,33 @@
 class Solution {
+    public String getFreq(String str){
+        int[] freq = new int[26];
+        for(int i = 0; i < str.length(); i++){
+            freq[str.charAt(i) - 'a']++;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < 26; i++){
+            sb.append(freq[i] + " ");
+        }
+
+        return sb.toString();
+    }
     public List<List<String>> groupAnagrams(String[] strs) {
         HashMap<String, Integer> hm = new HashMap<>();
         List<List<String>> ans = new ArrayList<>();
+        int index = 0;
 
-        for(String str: strs){
-            Integer[] arr = new Integer[26];
-            for(char ch : str.toCharArray()){
-                if(arr[ch - 'a'] == null) arr[ch - 'a'] = 0;
-                arr[ch - 'a']++;
-                System.out.println(ch);
-                System.out.println(arr[ch - 'a']);
-
-            }
-            StringBuilder sortedSb = new StringBuilder();
-            for(int i = 0; i < 26; i++){
-                if(arr[i] != null){
-                    sortedSb.append(i + 'a');
-                    sortedSb.append(arr[i] + '0');
-                }
-            }
-            String sortedStr = sortedSb.toString();
-            if(!hm.containsKey(sortedStr)){
-                hm.put(sortedStr, ans.size());
-                ArrayList<String> temp = new ArrayList<>();
-                temp.add(str);
-                ans.add(temp);
+        for(String str : strs){
+            String freqStr = getFreq(str);
+            if(hm.containsKey(freqStr)){
+                ans.get(hm.get(freqStr)).add(str);
             }
             else{
-                ans.get(hm.get(sortedStr)).add(str);
+                List<String> arr = new ArrayList<>();
+                arr.add(str);
+                ans.add(arr);
+                hm.put(freqStr, index);
+                index++;
             }
         }
 
