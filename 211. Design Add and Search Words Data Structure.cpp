@@ -1,60 +1,64 @@
-class TrieNode {
-public:
-    bool isEnd = false;
-    TrieNode* children[26];
-
-    TrieNode() {
-        fill(children, children + 26, nullptr);
-    }
-};
-
 class WordDictionary {
-    TrieNode* root = new TrieNode();
+    struct Node {
+        int child[26];
+        bool isEnd;
+
+        Node() {
+            fill(child, child + 26, -1);
+            isEnd = false;
+        }
+    };
+
+    vector<Node> trie;
+
+    bool dfs(const string& word, int pos, int node) {
+        if (pos == word.size())
+            return trie[node].isEnd;
+
+        int idx = word[pos] - 'a';
+
+        if (word[pos] != '.') {
+            int next = trie[node].child[idx];
+
+            if (next == -1)
+                return false;
+
+            return dfs(word, pos + 1, next);
+        }
+
+        for (int i = 0; i < 26; i++) {
+            int next = trie[node].child[i];
+
+            if (next != -1 && dfs(word, pos + 1, next))
+                return true;
+        }
+
+        return false;
+    }
 
 public:
     WordDictionary() {
+        trie.emplace_back();
     }
 
     void addWord(string word) {
-        TrieNode* node = root;
+        int node = 0;
 
-        for (int i = 0; i < word.length(); i++) {
-            char ch = word[i];
+        for (char ch : word) {
+            int idx = ch - 'a';
 
-            if (node->children[ch - 'a'] == nullptr) {
-                node->children[ch - 'a'] = new TrieNode();
+            if (trie[node].child[idx] == -1) {
+                trie[node].child[idx] = trie.size();
+                trie.emplace_back();
             }
 
-            node = node->children[ch - 'a'];
+            node = trie[node].child[idx];
         }
 
-        node->isEnd = true;
-    }
-
-    bool dfs(string word, int index, TrieNode* node) {
-        if (index >= word.length())
-            return node->isEnd;
-
-        char ch = word[index];
-        bool res = false;
-
-        if (ch == '.') {
-            for (int i = 0; i < 26; i++) {
-                if (node->children[i] != nullptr)
-                    res |= dfs(word, index + 1, node->children[i]);
-            }
-        }
-        else {
-            if (node->children[ch - 'a'] == nullptr)
-                return false;
-
-            res |= dfs(word, index + 1, node->children[ch - 'a']);
-        }
-
-        return res;
+        trie[node].isEnd = true;
     }
 
     bool search(string word) {
-        return dfs(word, 0, root);
+        return dfs(word, 0, 0);
     }
 };
