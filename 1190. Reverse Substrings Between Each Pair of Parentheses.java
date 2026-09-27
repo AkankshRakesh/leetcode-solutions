@@ -20,4 +20,4 @@ class Solution {
         StringBuilder ans = solve(s, new int[]{0});
         return ans.reverse().toString();
     }
-}
+}  
