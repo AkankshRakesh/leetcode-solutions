@@ -1,22 +1,23 @@
 class Solution {
-    public boolean check(char top, char curr){
-        if((top == '(' && curr == ')') || (top == '[' && curr == ']') || (top == '{' && curr == '}'))
-            return true;
+    public boolean isOpening(char ch){
+        if(ch == '[' || ch == '{' || ch == '(') return true;
+        return false;
+    }
+    public boolean isMatching(char ch1, char ch2){
+        if((ch1 == '[' && ch2 == ']') || (ch1 == '(' && ch2 == ')') || (ch1 == '{' && ch2 == '}')) return true;
         return false;
     }
     public boolean isValid(String s) {
         Stack<Character> st = new Stack<>();
-        for(char ch : s.toCharArray()){
-            if(st.isEmpty()){
-                st.push(ch);
-                continue;
+        for(int i = 0; i < s.length(); i++){
+            char ch = s.charAt(i);
+            if(isOpening(ch)) st.push(ch);
+            else{
+                if(st.isEmpty() || !isMatching(st.peek(), ch)) return false;
+                st.pop();
             }
-            char top = st.peek();
-            if(check(top, ch)) st.pop();
-            else st.push(ch);
         }
 
-        if(st.size() != 0) return false;
-        return true;
+        return st.isEmpty();
     }
 }
