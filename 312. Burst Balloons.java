@@ -1,29 +1,23 @@
 class Solution {
-    public int maxCoins(int[] nums) {
-        int m = nums.length;
-        int[] arr = new int[m + 2];
-        arr[0] = 1;
-        for(int i = 0; i < m; i++) arr[i + 1] = nums[i];
-        arr[m + 1] = 1;
-        int n = m + 2;
+    public int dfs(int[] nums, int left, int right, int[][] dp){
+        if(left > right) return 0;
 
-        int[][] dp = new int[n][n];
+        if(dp[left][right] != -1) return dp[left][right];
 
-        for (int len = 2; len < n; len++) {
-            for (int i = 0; i < n - len; i++) {
-                int j = i + len;
-                dp[i][j] = Integer.MIN_VALUE;
-
-                for (int k = i + 1; k < j; k++) {
-                    int cost = dp[i][k] + dp[k][j]
-                               + arr[i] * arr[k] * arr[j];
-                    if (cost > dp[i][j]) {
-                        dp[i][j] = cost;
-                    }
-                }
-            }
+        int ans = 0;
+        int next = right + 1 < nums.length ? nums[right + 1] : 1;
+        int prev = left - 1 >= 0 ? nums[left - 1] : 1;
+        
+        for(int i = left; i <= right; i++){
+            int curr = nums[i] * prev * next;
+            ans = Math.max(ans, curr + dfs(nums, left, i - 1, dp) + dfs(nums, i + 1, right, dp));
         }
 
-        return dp[0][n - 1];
+        return dp[left][right] = ans;
+    }
+    public int maxCoins(int[] nums) {
+        int[][] dp = new int[nums.length][nums.length];
+        for(int i = 0; i < nums.length; i++) Arrays.fill(dp[i], -1);
+        return dfs(nums, 0, nums.length - 1, dp);
     }
 }
