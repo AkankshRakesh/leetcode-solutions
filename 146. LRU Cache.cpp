@@ -1,70 +1,103 @@
+class Node {
+public:
+    int val;
+    int key;
+    Node* next;
+    Node* prev;
+
+    Node(int val, int key) {
+        this->val = val;
+        this->key = key;
+        next = nullptr;
+        prev = nullptr;
+    }
+};
+
 class LRUCache {
-    struct Node {
-        int val;
-        Node* left;
-        Node* right;
-        Node(int v) : val(v), left(nullptr), right(nullptr) {}
-    };
-
-    struct Pair {
-        int value;
-        int count;
-        Pair(int v, int c) : value(v), count(c) {}
-    };
-
-    unordered_map<int, Pair*> hm;
-    Node* head;
-    Node* tail;
-    int maxCap;
+    unordered_map<int, Node*> hm;
+    Node* head = nullptr;
+    Node* tail = nullptr;
+    int capacity;
+    int currCap = 0;
 
 public:
     LRUCache(int capacity) {
-        maxCap = capacity;
-        head = new Node(-1);
-        tail = new Node(-1);
+        this->capacity = capacity;
     }
-    
+
+    void markUsed(int key) {
+        Node* node = hm[key];
+
+        if (head == tail || head == node) return;
+        else if (tail == node) {
+            Node* next = node->next;
+            next->prev = nullptr;
+            tail = next;
+
+            node->prev = head;
+            head->next = node;
+            head = node;
+        }
+        else {
+            Node* prev = node->prev;
+            Node* next = node->next;
+            next->prev = prev;
+            prev->next = next;
+
+            node->prev = head;
+            head->next = node;
+            head = node;
+        }
+    }
+
+    void deleteNode() {
+        hm.erase(tail->key);
+
+        if (head == tail) {
+            head = nullptr;
+            tail = nullptr;
+        }
+        else {
+            Node* next = tail->next;
+            next->prev = nullptr;
+            tail = next;
+        }
+    }
+
     int get(int key) {
         if (hm.find(key) == hm.end()) return -1;
 
-        int val = hm[key]->value;
-        hm[key]->count++;
+        Node* node = hm[key];
+        markUsed(key);
 
-        Node* node = new Node(key);
-        node->right = head;
-        head->left = node;
-        head = node;
-
-        return val;
+        return node->val;
     }
-    
+
     void put(int key, int value) {
         if (hm.find(key) != hm.end()) {
-            hm[key]->value = value;
-            hm[key]->count++;
-        } else {
-            hm[key] = new Pair(value, 1);
+            Node* node = hm[key];
+            node->val = value;
+            markUsed(key);
         }
+        else {
+            currCap++;
+            Node* node = new Node(value, key);
+            hm[key] = node;
 
-        Node* node = new Node(key);
-        node->right = head;
-        head->left = node;
-        head = node;
-
-        if (tail->val == -1) tail = head;
-
-        while ((int)hm.size() > maxCap) {
-            int tailKey = tail->val;
-            if (hm[tailKey]->count == 1) {
-                delete hm[tailKey];
-                hm.erase(tailKey);
-            } else {
-                hm[tailKey]->count--;
+            if (head == nullptr) {
+                head = node;
+                tail = node;
             }
+            else {
+                node->prev = head;
+                head->next = node;
+                head = node;
 
-            Node* prev = tail->left;
-            if (prev) prev->right = nullptr;
-            tail = prev;
+                if (currCap > capacity) {
+                    deleteNode();
+                    currCap--;
+                }
+            }
         }
     }
 };
