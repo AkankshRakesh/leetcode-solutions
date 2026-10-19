@@ -1,32 +1,29 @@
 class Solution {
-    class Pair {
-        int start;
-        int end;
-        public Pair(int start, int end) {
-            this.start = start;
-            this.end = end;
-        }
+    public boolean isOverlap(int x1, int y1, int x2, int y2){
+        if(x2 <= y1) return true;
+        return false;
     }
+    public int[][] merge(int[][] intervals) {
+        Arrays.sort(intervals, (a, b) -> a[0] != b[0] ? Integer.compare(a[0], b[0]) : Integer.compare(a[1], b[1]));
 
-    public int[][] merge(int[][] invs) {
-        Arrays.sort(invs, (a, b) -> a[0] != b[0] ? Integer.compare(a[0], b[0]) : Integer.compare(a[1], b[1]));
+        ArrayList<int[]> res = new ArrayList<>();
+        int index = 0;
+        while(index < intervals.length){
+            int maxR = intervals[index][1];
+            int minL = intervals[index][0];
 
-        List<Pair> merged = new ArrayList<>();
-        merged.add(new Pair(invs[0][0], invs[0][1]));
-
-        for (int i = 1; i < invs.length; i++) {
-            Pair last = merged.get(merged.size() - 1);
-            if (last.end >= invs[i][0]) {
-                last.end = Math.max(last.end, invs[i][1]);
-            } else {
-                merged.add(new Pair(invs[i][0], invs[i][1]));
+            while(index + 1 < intervals.length && isOverlap(minL, maxR, intervals[index + 1][0], intervals[index + 1][1])){
+                maxR = Math.max(maxR, intervals[index + 1][1]);
+                index++;
             }
+
+            res.add(new int[]{minL, maxR});
+            index++;
         }
 
-        int[][] ans = new int[merged.size()][2];
-        for (int i = 0; i < merged.size(); i++) {
-            ans[i][0] = merged.get(i).start;
-            ans[i][1] = merged.get(i).end;
+        int[][] ans = new int[res.size()][2];
+        for(int i = 0; i < res.size(); i++){
+            ans[i] = res.get(i);
         }
 
         return ans;
