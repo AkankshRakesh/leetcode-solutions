@@ -1,62 +1,98 @@
+class Node{
+    int val;
+    int key;
+    Node next;
+    Node prev;
+    public Node(int val, int key){
+        this.val = val;
+        this.key = key;
+    }
+}
+
 class LRUCache {
-    class Node{
-        Node left;
-        Node right;
-        int val;
-        public Node(int val){
-            this.val = val;
-        }
-    }
-    class Pair{
-        int value;
-        int count;
-        public Pair(int value, int count){
-            this.value = value;
-            this.count = count;
-        }
-    }
-    HashMap<Integer, Pair> hm = new HashMap<>();
-    Node head = new Node(-1);
-    Node tail = new Node(-1);
-    int maxCap;
+    HashMap<Integer, Node> hm = new HashMap<>();
+    Node head = null;
+    Node tail = null;
+    int capacity;
+    int currCap = 0;
     public LRUCache(int capacity) {
-        maxCap = capacity;
+        this.capacity = capacity;
     }
     
+    public void markUsed(int key){
+        Node node = hm.get(key);
+        if(head == tail || head == node) return;
+        else if(tail == node){
+            Node next = node.next;
+            next.prev = null;
+            tail = next;
+            
+            node.prev = head;
+            head.next = node;
+            head = node;
+        }
+        else{
+            Node prev = node.prev;
+            Node next = node.next;
+            next.prev = prev;
+            prev.next = next;
+
+            node.prev = head;
+            head.next = node;
+            head = node;
+        }
+    }
+
+    public void delete(){
+        hm.remove(tail.key);
+        if(head == tail){
+            head = null;
+            tail = null;
+        }
+        else{
+            Node next = tail.next;
+            next.prev = null;
+            tail = next;
+        }
+    }
+
     public int get(int key) {
         if(!hm.containsKey(key)) return -1;
-        int val = hm.get(key).value;
-        hm.get(key).count++;
-        Node node = new Node(key);
-        node.right = head;
-        head.left = node;
-        head = node;
+        Node node = hm.get(key);
+        
+        // if(head != null) System.out.println(head.key + " " + head.val);
 
-        return val;
+        markUsed(key);
+
+
+        return node.val;
     }
     
     public void put(int key, int value) {
         if(hm.containsKey(key)){
-            hm.get(key).value = value;
-            hm.get(key).count++;
+            Node node = hm.get(key);
+            node.val = value;
+            markUsed(key);
         }
         else{
-            hm.put(key, new Pair(value, 1));
-        }
-        Node node = new Node(key);
-        node.right = head;
-        head.left = node;
-        head = node;
-        if(tail.val == -1) tail = head;
+            currCap++;  
+            Node node = new Node(value, key);
+            hm.put(key, node);
 
-        while(hm.size() > maxCap){
-            int tailKey = tail.val;
-            if(hm.get(tailKey).count == 1) hm.remove(tailKey);
-            else hm.get(tailKey).count--;
+            if(head == null){
+                head = node;
+                tail = node;
+            }
+            else{
+                node.prev = head;
+                head.next = node;
+                head = node;
 
-            Node prev = tail.left;
-            prev.right = null;
-            tail = prev;
+                if(currCap > capacity){
+                    delete();
+                    currCap--;
+                }
+            }
         }
     }
 }
