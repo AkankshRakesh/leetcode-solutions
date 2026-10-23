@@ -22,4 +22,4 @@ class Solution {
 
         return found ? swapCost : 0;
     }
-}
+} 
