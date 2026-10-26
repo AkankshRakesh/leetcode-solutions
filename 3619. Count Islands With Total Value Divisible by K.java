@@ -1,25 +1,40 @@
 class Solution {
-    public int dfs(int[][] grid, int i, int j, int n, int m, boolean[][] visited){
-        if(i >= n || j >= m || i < 0 || j < 0) return 0;
+    private static final int[] dirX = new int[]{0, 1, 0, -1};
+    private static final int[] dirY = new int[]{1, 0, -1, 0};
 
-        if(grid[i][j] == 0 || visited[i][j]) return 0;
-        visited[i][j] = true;
-        int val = dfs(grid, i + 1, j, n, m , visited) + dfs(grid, i, j + 1, n, m , visited) + dfs(grid, i - 1, j, n, m , visited) + dfs(grid, i, j - 1, n, m , visited) + grid[i][j];
-
-        // visited[i][j] = false;
-        return val;
-    }
-    public int countIslands(int[][] grid, int k) {
-        int n = grid.length;
-        int m = grid[0].length;
+    public int countIslands(int[][] grid, int target) {
+        int n = grid.length, m = grid[0].length;
         boolean[][] visited = new boolean[n][m];
+
+        Queue<int[]> q = new LinkedList<>();
 
         int ans = 0;
         for(int i = 0; i < n; i++){
             for(int j = 0; j < m; j++){
                 if(grid[i][j] != 0 && !visited[i][j]){
-                    int val = dfs(grid, i, j, n, m, visited);
-                    if(val % k == 0) ans++;
+                    q.offer(new int[]{i, j});
+                    visited[i][j] = true;
+
+                    long sum = 0;
+                    while(!q.isEmpty()){
+                        int x = q.peek()[0];
+                        int y = q.poll()[1];
+                        sum += grid[x][y];
+                        // System.out.println(x + " " + y);
+
+                        for(int k = 0; k < 4; k++){
+                            int nextX = dirX[k] + x;
+                            int nextY = dirY[k] + y;
+
+                            if(nextX < 0 || nextY < 0 || nextX >= n || nextY >= m) continue;
+                            
+                            if(grid[nextX][nextY] != 0 && !visited[nextX][nextY]) q.offer(new int[]{nextX, nextY});
+                            visited[nextX][nextY] = true;
+                        }                   
+                    }
+
+                    // System.out.println(sum + " " + i + " " + j);
+                    if(sum % target == 0) ans++;
                 }
             }
         }
