@@ -16,7 +16,7 @@ class Solution {
             }
             maxIncCount = maxIncCount > incCount ? maxIncCount : incCount;
             maxDecCount = maxDecCount > decCount ? maxDecCount : decCount;
-        }
+        } 
         return maxDecCount > maxIncCount ? maxDecCount : maxIncCount;
     }
 }
