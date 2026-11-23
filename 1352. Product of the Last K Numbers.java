@@ -28,4 +28,4 @@ class ProductOfNumbers {
  * ProductOfNumbers obj = new ProductOfNumbers();
  * obj.add(num);
  * int param_2 = obj.getProduct(k);
- */
+ */ c 
