@@ -13,7 +13,7 @@ public:
 
             if (node->left) q.push(node->left);
             if (node->right) q.push(node->right);
-        }
+        }  
 
         arr.push_back(curr);
         levelTrav(arr, q); 
