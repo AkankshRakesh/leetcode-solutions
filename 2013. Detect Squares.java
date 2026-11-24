@@ -1,50 +1,66 @@
 class DetectSquares {
-    int[][] coordMap = new int[1001][1001];
+    HashMap<String, Integer> hm = new HashMap<>();
     public DetectSquares() {
-        coordMap = new int[1001][1001];
+        
     }
     
     public void add(int[] point) {
-        coordMap[point[0]][point[1]]++;
+        StringBuilder sb = new StringBuilder();
+        sb.append(point[0]);
+        sb.append("#");
+        sb.append(point[1]);
+
+        String key = sb.toString();
+        hm.put(key, hm.getOrDefault(key, 0) + 1);
     }
     
     public int count(int[] point) {
-        int x = point[0];
-        int y = point[1];
+        // add(point);
+
         int ans = 0;
-        for(int indx = 0; indx < x; indx++){
-            if(coordMap[indx][y] == 0) continue;
-            int sideLen = x - indx;
-            if(y - sideLen >= 0 && coordMap[x][y - sideLen] != 0){
-                int indy = y - sideLen;
-                if(coordMap[indx][indy] != 0){
-                    ans += coordMap[indx][y] * coordMap[x][indy] * coordMap[indx][indy];
-                }
+        for(Map.Entry<String, Integer> ele : hm.entrySet()){
+            String str = ele.getKey();
+            int x = 0, y = 0;
+            int index = 0;
+            while(str.charAt(index) != '#'){
+                x *= 10;
+                x += str.charAt(index) - '0';
+                index++;
             }
+            index++;
+            while(index < str.length()){
+                y *= 10;
+                y += str.charAt(index) - '0';
+                index++;
+            }
+            // System.out.println(x + " " + y);
 
-            if(y + sideLen <= 1000 && coordMap[x][y + sideLen] != 0){
-                int indy = y + sideLen;
-                if(coordMap[indx][indy] != 0){
-                    ans += coordMap[indx][y] * coordMap[x][indy] * coordMap[indx][indy];
-                }
-            }
-        }
-        for(int indx = x + 1; indx <= 1000; indx++){
-            if(coordMap[indx][y] == 0) continue;
-            int sideLen = indx - x;
-            if(y - sideLen >= 0 && coordMap[x][y - sideLen] != 0){
-                int indy = y - sideLen;
-                if(coordMap[indx][indy] != 0){
-                    ans += coordMap[indx][y] * coordMap[x][indy] * coordMap[indx][indy];
-                }
-            }
+            // not adjacent
+            if(point[1] != y) continue;
+            
+            // parallel to x axis
+            int dist = Math.abs(point[0] - x);
 
-            if(y + sideLen <= 1000 && coordMap[x][y + sideLen] != 0){
-                int indy = y + sideLen;
-                if(coordMap[indx][indy] != 0){
-                    ans += coordMap[indx][y] * coordMap[x][indy] * coordMap[indx][indy];
-                }
-            }
+            if (dist == 0) continue;
+
+            String next1 = point[0] + "#" + (point[1] + dist);
+            String next2 = x + "#" + (y + dist);
+
+            if(hm.containsKey(next1) && hm.containsKey(next2)) 
+                ans += (hm.get(next1) * hm.get(next2) * ele.getValue());
+            
+            if(point[1] - dist < 0 || y - dist < 0) continue;
+
+            // point[0], point[1] - dist
+            // x, y - dist
+
+            next1 = point[0] + "#" + (point[1] - dist);
+            next2 = x + "#" + (y - dist);
+
+            if(!hm.containsKey(next1) || !hm.containsKey(next2)) continue;
+
+            ans += (hm.get(next1) * hm.get(next2) * ele.getValue());
+
         }
 
         return ans;
