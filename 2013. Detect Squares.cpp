@@ -12,7 +12,7 @@ public:
     void add(vector<int> point) {
         coordMap[point[0]][point[1]]++;
     }
-    
+      
     int count(vector<int> point) {
         int x = point[0];
         int y = point[1];
