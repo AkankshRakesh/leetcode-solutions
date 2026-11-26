@@ -20,6 +20,6 @@ public:
             ans[index++] = pq.top().first;
         }
 
-        return ans; 
+        return ans;
     }
 };
