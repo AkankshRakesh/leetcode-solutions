@@ -26,5 +26,5 @@ public:
         }
 
         return false;
-    }
+    }  
 };
