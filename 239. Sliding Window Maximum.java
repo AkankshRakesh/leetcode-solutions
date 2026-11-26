@@ -7,7 +7,7 @@ class Solution {
         ans.add(nums[pq.peek()]);
 
         for(int i = k; i < nums.length; i++){
-            pq.offer(i);  
+            pq.offer(i);
             while(pq.peek() <= i - k) pq.poll();
 
             ans.add(nums[pq.peek()]);
