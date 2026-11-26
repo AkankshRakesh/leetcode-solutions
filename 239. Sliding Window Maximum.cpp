@@ -18,7 +18,7 @@ public:
             pq.emplace(ele, i + k - 1);   
             while (pq.top().second < i) pq.pop();
             ans[index++] = pq.top().first;
-        }
+        }  
 
         return ans;
     }
