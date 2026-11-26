@@ -15,7 +15,7 @@ public:
         ans[0] = pq.top().first;
         for (int i = 1; i + k <= (int)nums.size(); i++) {
             int ele = nums[i + k - 1];
-            pq.emplace(ele, i + k - 1);
+            pq.emplace(ele, i + k - 1);   
             while (pq.top().second < i) pq.pop();
             ans[index++] = pq.top().first;
         }
