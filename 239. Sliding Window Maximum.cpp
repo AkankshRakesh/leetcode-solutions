@@ -10,7 +10,7 @@ public:
 
         for (int i = 0; i < k; i++) {
             pq.emplace(nums[i], i);
-        }
+        }  
 
         ans[0] = pq.top().first;
         for (int i = 1; i + k <= (int)nums.size(); i++) {
