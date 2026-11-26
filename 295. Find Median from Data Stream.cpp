@@ -13,7 +13,7 @@ public:
                 back.pop();
                 back.push(num);
             } else {
-                front.push(num);
+                front.push(num);  
             }
 
             if(front.size() - back.size() == 2) {
